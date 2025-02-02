@@ -5,7 +5,8 @@ abstract final class NeusHubColors {
       grey = Color(0xFFb3b3b3),
       white = Colors.white,
       black = Colors.black,
-      blackLight = Colors.black.withAlpha((60 / 100).round() * 255),
+      blackLight = Color(0xFFb3b3b3).withAlpha(128),
+      blackDark = Color(0xFF121212),
       transparent = Colors.transparent,
       error = Color(0xFFff8080);
 }
@@ -25,8 +26,9 @@ class NeusHubAppSize {
 
 ThemeData theme = ThemeData(
   scaffoldBackgroundColor: NeusHubColors.white,
+  fontFamily: 'rubik',
   appBarTheme: AppBarTheme(
-    backgroundColor: Colors.transparent,
+    backgroundColor: NeusHubColors.white,
     foregroundColor: NeusHubColors.black,
     shape: Border(
       bottom: BorderSide(
@@ -60,14 +62,14 @@ ThemeData theme = ThemeData(
     error: NeusHubColors.error,
     onError: NeusHubColors.transparent,
     surface: NeusHubColors.white,
-    onSurface: NeusHubColors.transparent,
+    onSurface: NeusHubColors.blackDark,
   ),
   dialogBackgroundColor: NeusHubColors.white,
   dialogTheme: DialogTheme(
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(5),
     ),
   ),
 );
 
-const Size mobileSize = Size(520, 0);
+const Size mobileSize = Size(850, 0);
