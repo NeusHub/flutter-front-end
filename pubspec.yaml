@@ -17,6 +17,7 @@ dependencies:
   bloc: ^9.0.0
   shared_preferences: ^2.5.1
   ionicons: ^0.2.2
+  http: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -30,7 +31,16 @@ flutter:
       fonts:
       - asset: fonts/Rubik-Regular.ttf
 
+    # icons
+    - family: icons
+      fonts:
+       - asset: fonts/icons/icons.ttf
+    - family: offline
+      fonts:
+        - asset: fonts/icons/offline.ttf
+
   assets:
     - assets/images/main.png
+    - assets/images/offline_background.png
 
   uses-material-design: true

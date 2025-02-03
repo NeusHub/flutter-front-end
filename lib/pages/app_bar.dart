@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:neushub/pages/sign.dart';
+
 import '../theme.dart';
 import '../inheritance.dart';
 import '../main.dart';
 
 class NeusHubAppBarMenu {
+  final Key? appBarey;
   final BuildContext context;
   final Iterable<String> tabs;
   final bool menuFlag;
   final ScrollController? scrollController;
 
   const NeusHubAppBarMenu({
+    this.appBarey,
     required this.context,
     required this.tabs,
     this.scrollController,
@@ -136,6 +140,16 @@ class NeusHubAppBar extends PreferredSize {
             icon: Icons.abc,
             label: 'Grow your audience today',
             only: TextIconButtonOnlyJO.textOnly,
+            onPressed: () async {
+              if (await nodeAPI.connection() == 200) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return NeusHubSignDialog();
+                  },
+                );
+              }
+            },
           ),
         ],
       ),
@@ -164,14 +178,16 @@ class NeusHubAppBarTitle extends StatelessWidget {
         return GestureDetector(
           child: ElevatedButton(
             onPressed: () {
-              scrollController?.animateTo(
-                0,
-                duration: Durations.long2,
-                curve: Curves.easeInOut,
-              );
-              if (menuFlag) {
-                Navigator.of(context).pop();
-              }
+              try {
+                scrollController?.animateTo(
+                  0,
+                  duration: Durations.long2,
+                  curve: Curves.easeInOut,
+                );
+                if (menuFlag) {
+                  Navigator.of(context).pop();
+                }
+              } catch (e) {}
             },
             onHover: (value) {
               Provider.of<NeusHubHover<Color>>(
@@ -229,19 +245,21 @@ class NeusHubAppBarTab extends StatelessWidget {
         label: tab,
         only: TextIconButtonOnlyJO.textOnly,
         onPressed: () {
-          if (menuFlag) {
-            Navigator.of(context).pop();
-          }
-          scrollController?.animateTo(
-            ((pages[tab]?.key as GlobalKey).currentContext?.findRenderObject()
-                        as RenderBox)
-                    .localToGlobal(Offset.zero)
-                    .dy +
-                scrollController!.offset -
-                60,
-            duration: Durations.long2,
-            curve: Curves.easeInOut,
-          );
+          try {
+            if (menuFlag) {
+              Navigator.of(context).pop();
+            }
+            scrollController?.animateTo(
+              ((pages[tab]?.key as GlobalKey).currentContext?.findRenderObject()
+                          as RenderBox)
+                      .localToGlobal(Offset.zero)
+                      .dy +
+                  scrollController!.offset -
+                  60,
+              duration: Durations.long2,
+              curve: Curves.easeInOut,
+            );
+          } catch (e) {}
         },
       ),
     );

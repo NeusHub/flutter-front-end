@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 
 import '../theme.dart';
+import '../icons.dart';
 import '../main.dart';
 
 class NeusHubFooter extends StatelessWidget {
@@ -60,6 +60,7 @@ class NeusHubFooter extends StatelessWidget {
                       label: tab,
                       only: TextIconButtonOnlyJO.textOnly,
                       color: Theme.of(context).scaffoldBackgroundColor,
+                      textDecoration: TextDecoration.underline,
                     ),
                   ),
                 )
@@ -80,6 +81,7 @@ class NeusHubFooter extends StatelessWidget {
                 label: 'hallo@naushub.com',
                 only: TextIconButtonOnlyJO.textOnly,
                 color: Theme.of(context).scaffoldBackgroundColor,
+                textDecoration: TextDecoration.underline,
               ),
             ],
           ),
@@ -97,21 +99,21 @@ class NeusHubFooter extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextIconButtonJO(
-                    icon: Ionicons.logo_facebook,
+                    icon: NeusHubIcons.facebook,
                     label: '',
                     only: TextIconButtonOnlyJO.iconOnly,
                     color: Theme.of(context).scaffoldBackgroundColor,
                   ),
-                  SizedBox(width: 5),
+                  SizedBox(width: 10),
                   TextIconButtonJO(
-                    icon: Ionicons.logo_twitter,
+                    icon: NeusHubIcons.x,
                     label: '',
                     only: TextIconButtonOnlyJO.iconOnly,
                     color: Theme.of(context).scaffoldBackgroundColor,
                   ),
-                  SizedBox(width: 5),
+                  SizedBox(width: 10),
                   TextIconButtonJO(
-                    icon: Ionicons.logo_linkedin,
+                    icon: NeusHubIcons.linkedin,
                     label: '',
                     only: TextIconButtonOnlyJO.iconOnly,
                     color: Theme.of(context).scaffoldBackgroundColor,

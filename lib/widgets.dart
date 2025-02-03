@@ -14,11 +14,17 @@ class _TextIconButtonJO extends TextIconButtonJO {
     super.textSize,
     super.textWeight,
     super.color,
+    this.backgroundColor,
     super.cursor,
+    this.padding,
+    this.radius,
     this.filled = false,
   });
 
+  final Color? backgroundColor;
   final bool filled, expanded;
+  final EdgeInsets? padding;
+  final BorderRadius? radius;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +43,9 @@ class _TextIconButtonJO extends TextIconButtonJO {
       textSize: textSize,
       textWeight: textWeight,
       color: color,
+      backgroundColor: backgroundColor ?? Colors.black,
+      padding: padding,
+      radius: radius,
       cursor: cursor,
     );
   }
@@ -54,6 +63,7 @@ class TextIconButtonJO extends StatelessWidget {
     this.iconSize,
     this.textSize,
     this.textWeight,
+    this.textDecoration,
     this.color,
     this.cursor,
   });
@@ -65,6 +75,7 @@ class TextIconButtonJO extends StatelessWidget {
   final TextIconButtonOnlyJO only;
   final double? iconSize, textSize;
   final FontWeight? textWeight;
+  final TextDecoration? textDecoration;
   final Color? color;
   final MouseCursor? cursor;
 
@@ -80,6 +91,7 @@ class TextIconButtonJO extends StatelessWidget {
       iconSize: iconSize,
       textSize: textSize,
       textWeight: textWeight,
+      textDecoration: textDecoration,
       color: color,
       cursor: cursor,
       expanded: false,
@@ -99,6 +111,9 @@ class TextIconButtonJO extends StatelessWidget {
     double? textSize,
     FontWeight? textWeight,
     Color? color,
+    Color? backgroundColor,
+    EdgeInsets? padding,
+    BorderRadius? radius,
     MouseCursor? cursor,
   }) {
     return _TextIconButtonJO(
@@ -113,6 +128,9 @@ class TextIconButtonJO extends StatelessWidget {
       textSize: textSize,
       textWeight: textWeight,
       color: color,
+      backgroundColor: backgroundColor,
+      padding: padding,
+      radius: radius,
       cursor: cursor,
       expanded: expanded,
     );
@@ -131,6 +149,9 @@ class TextIconButtonJO extends StatelessWidget {
     double? textSize,
     FontWeight? textWeight,
     Color? color,
+    Color? backgroundColor,
+    EdgeInsets? padding,
+    BorderRadius? radius,
     MouseCursor? cursor,
   }) {
     return _TextIconButtonJO(
@@ -146,6 +167,9 @@ class TextIconButtonJO extends StatelessWidget {
       textSize: textSize,
       textWeight: textWeight,
       color: color,
+      backgroundColor: backgroundColor,
+      padding: padding,
+      radius: radius,
       cursor: cursor,
       expanded: expanded,
     );
@@ -170,7 +194,11 @@ class TextIconButtonWidgetJO extends StatefulWidget {
     this.iconSize,
     this.textSize,
     this.textWeight,
+    this.textDecoration,
     this.color,
+    this.backgroundColor = Colors.black,
+    this.padding,
+    this.radius,
     this.cursor,
   });
 
@@ -182,7 +210,11 @@ class TextIconButtonWidgetJO extends StatefulWidget {
   final TextIconButtonOnlyJO only;
   final double? iconSize, textSize;
   final FontWeight? textWeight;
+  final TextDecoration? textDecoration;
   final Color? color;
+  final Color backgroundColor;
+  final EdgeInsets? padding;
+  final BorderRadius? radius;
   final MouseCursor? cursor;
 
   @override
@@ -211,24 +243,25 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
     return Container(
       width: (widget.expanded) ? double.infinity : null,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(5)),
+        borderRadius:
+            (widget.radius == null) ? BorderRadius.circular(5) : widget.radius,
         color: (widget.type == TextIconButtonTypeJO.filled)
             ? (hovered)
                 ? Theme.of(context).colorScheme.onPrimary
-                : Theme.of(context).colorScheme.primary
+                : widget.backgroundColor
             : null,
         border: (widget.type == TextIconButtonTypeJO.outlined)
             ? Border.all(
                 color: (hovered)
                     ? Theme.of(context).colorScheme.onPrimary
-                    : Theme.of(context).colorScheme.primary,
+                    : widget.backgroundColor,
                 width: 1,
               )
             : (widget.type == TextIconButtonTypeJO.filled)
                 ? Border.all(
                     color: (hovered)
                         ? Theme.of(context).colorScheme.onPrimary
-                        : Theme.of(context).colorScheme.primary,
+                        : widget.backgroundColor,
                     width: 1,
                   )
                 : null,
@@ -252,11 +285,15 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
               }
             },
             onHover: onHover,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: widget.type == TextIconButtonTypeJO.normal ? 0 : 7.5,
-                horizontal: widget.type == TextIconButtonTypeJO.normal ? 0 : 20,
-              ),
+            child: Container(
+              padding: (widget.padding == null)
+                  ? EdgeInsets.symmetric(
+                      vertical:
+                          widget.type == TextIconButtonTypeJO.normal ? 0 : 7.5,
+                      horizontal:
+                          widget.type == TextIconButtonTypeJO.normal ? 0 : 20,
+                    )
+                  : widget.padding,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 textDirection: (widget.reversed) ? TextDirection.rtl : null,
@@ -274,15 +311,21 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
                                         ? Theme.of(context).colorScheme.primary
                                         : widget.color
                                 : (widget.type == TextIconButtonTypeJO.filled)
-                                    ? Theme.of(context).scaffoldBackgroundColor
+                                    ? (hovered)
+                                        ? Theme.of(context)
+                                            .scaffoldBackgroundColor
+                                        : (widget.color == null)
+                                            ? Theme.of(context)
+                                                .scaffoldBackgroundColor
+                                            : widget.color
                                     : (hovered)
                                         ? Theme.of(context)
                                             .colorScheme
-                                            .onPrimary
+                                            .onSecondary
                                         : (widget.color == null)
                                             ? Theme.of(context)
                                                 .colorScheme
-                                                .primary
+                                                .secondary
                                             : widget.color,
                             size: widget.iconSize,
                           ),
@@ -302,6 +345,13 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
                           Text(
                             widget.label,
                             style: TextStyle(
+                              decoration:
+                                  (hovered) ? widget.textDecoration : null,
+                              decorationColor: (hovered)
+                                  ? Theme.of(context).colorScheme.onSecondary
+                                  : (widget.color == null)
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : widget.color,
                               color: (widget.type ==
                                       TextIconButtonTypeJO.outlined)
                                   ? (hovered)
