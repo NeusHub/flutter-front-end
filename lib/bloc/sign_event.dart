@@ -1,20 +1,20 @@
 part of 'sign_bloc.dart';
 
 @immutable
-sealed class SignEvent {}
+sealed class NeusHubSignEvent {}
 
-final class SignInEvent extends SignEvent {
-  final SignType signType = SignType.signIn;
+final class NeusHubSignInEvent extends NeusHubSignEvent {
+  final NeusHubSignType signType = NeusHubSignType.signIn;
 }
 
-final class SignUpEvent extends SignEvent {
-  final SignType signType = SignType.signUp;
+final class NeusHubSignUpEvent extends NeusHubSignEvent {
+  final NeusHubSignType signType = NeusHubSignType.signUp;
 }
 
-final class SignResetEvent extends SignEvent {
-  final SignType signType = SignType.resetPassword;
+final class NeusHubSignResetEvent extends NeusHubSignEvent {
+  final NeusHubSignType signType = NeusHubSignType.resetPassword;
 }
 
-final class SignEditEvent extends SignEvent {
-  final SignType signType = SignType.editUser;
+final class NeusHubSignEditEvent extends NeusHubSignEvent {
+  final NeusHubSignType signType = NeusHubSignType.editUser;
 }

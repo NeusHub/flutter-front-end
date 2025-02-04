@@ -136,23 +136,38 @@ class NeusHubAppBar extends PreferredSize {
         children: [
           NeusHubAppBarTitle(scrollController: scrollController),
           Expanded(child: child),
-          TextIconButtonJO.filled(
-            icon: Icons.abc,
-            label: 'Grow your audience today',
-            only: TextIconButtonOnlyJO.textOnly,
-            onPressed: () async {
-              if (await nodeAPI.connection() == 200) {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return NeusHubSignDialog();
-                  },
-                );
-              }
-            },
-          ),
+          NeusHubSignButton(),
         ],
       ),
+    );
+  }
+}
+
+class NeusHubSignButton extends StatelessWidget {
+  const NeusHubSignButton({
+    super.key,
+    this.expanded = false,
+  });
+
+  final bool expanded;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextIconButtonJO.filled(
+      icon: Icons.abc,
+      label: 'Grow your audience today',
+      only: TextIconButtonOnlyJO.textOnly,
+      expanded: expanded,
+      onPressed: () async {
+        if (await nodeAPI.connection() == 200) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return NeusHubSignDialog();
+            },
+          );
+        }
+      },
     );
   }
 }
@@ -162,10 +177,12 @@ class NeusHubAppBarTitle extends StatelessWidget {
     super.key,
     this.menuFlag = false,
     this.scrollController,
+    this.onPressed,
   });
 
   final bool menuFlag;
   final ScrollController? scrollController;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +204,12 @@ class NeusHubAppBarTitle extends StatelessWidget {
                 if (menuFlag) {
                   Navigator.of(context).pop();
                 }
-              } catch (e) {}
+              } catch (e) {
+                return;
+              }
+              if (onPressed != null) {
+                onPressed!();
+              }
             },
             onHover: (value) {
               Provider.of<NeusHubHover<Color>>(

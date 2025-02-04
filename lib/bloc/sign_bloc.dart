@@ -4,24 +4,24 @@ import 'package:flutter/material.dart';
 part 'sign_event.dart';
 part 'sign_state.dart';
 
-enum SignType {
+enum NeusHubSignType {
   signIn,
   signUp,
   resetPassword,
   editUser,
 }
 
-class SignBloc extends Bloc<SignEvent, SignState> {
-  SignType signType = SignType.signIn;
+class NeusHubSignBloc extends Bloc<NeusHubSignEvent, NeusHubSignState> {
+  NeusHubSignType signType = NeusHubSignType.signIn;
 
-  SignBloc() : super(SignInitial()) {
-    on<SignEvent>((event, emit) {
-      if (event is SignInEvent) {
+  NeusHubSignBloc() : super(NeusHubSignInitial()) {
+    on<NeusHubSignEvent>((event, emit) {
+      if (event is NeusHubSignInEvent) {
         signType = event.signType;
-        emit(SignChangedState(signType));
-      } else if (event is SignUpEvent) {
+        emit(NeusHubSignChangedState(signType));
+      } else if (event is NeusHubSignUpEvent) {
         signType = event.signType;
-        emit(SignChangedState(signType));
+        emit(NeusHubSignChangedState(signType));
       }
     });
   }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:neushub/main.dart';
+
+import 'package:neushub/pages/app_bar.dart';
 
 import '../theme.dart';
+import '../main.dart';
 
 class NeusHubHomePage extends StatelessWidget {
   const NeusHubHomePage({super.key});
@@ -69,11 +71,9 @@ class NeusHubHomePage extends StatelessWidget {
                             expanded: true,
                           ),
                           SizedBox(height: 20),
-                          TextIconButtonJO.filled(
-                            icon: Icons.abc,
-                            label: 'Grow your audience today ',
-                            only: TextIconButtonOnlyJO.textOnly,
-                            expanded: true,
+                          NeusHubSignButton(
+                            expanded: (MediaQuery.sizeOf(context).width <
+                                mobileSize.width),
                           ),
                         ],
                       )
@@ -86,11 +86,7 @@ class NeusHubHomePage extends StatelessWidget {
                             activated: true,
                           ),
                           SizedBox(width: 20),
-                          TextIconButtonJO.filled(
-                            icon: Icons.abc,
-                            label: 'Grow your audience today ',
-                            only: TextIconButtonOnlyJO.textOnly,
-                          ),
+                          NeusHubSignButton(),
                         ],
                       ),
               ],

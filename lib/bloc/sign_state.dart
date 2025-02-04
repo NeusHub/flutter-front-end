@@ -1,14 +1,14 @@
 part of 'sign_bloc.dart';
 
 @immutable
-sealed class SignState {}
+sealed class NeusHubSignState {}
 
-final class SignInitial extends SignState {
-  final SignType signType = SignType.signIn;
+final class NeusHubSignInitial extends NeusHubSignState {
+  final NeusHubSignType signType = NeusHubSignType.signIn;
 }
 
-final class SignChangedState extends SignState {
-  final SignType signType;
+final class NeusHubSignChangedState extends NeusHubSignState {
+  final NeusHubSignType signType;
 
-  SignChangedState(this.signType);
+  NeusHubSignChangedState(this.signType);
 }
