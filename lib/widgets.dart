@@ -1,7 +1,13 @@
-part of './main.dart';
+import 'package:flutter/material.dart';
 
-class _TextIconButtonJO extends TextIconButtonJO {
-  const _TextIconButtonJO({
+import './icons.dart';
+
+enum NeusHubTextIconType { normal, filled, outlined }
+
+enum NeusHubTextIconOnly { normal, textOnly, iconOnly }
+
+class _NeusHubTextIconButton extends NeusHubTextIconButton {
+  const _NeusHubTextIconButton({
     super.key,
     required super.icon,
     required super.label,
@@ -28,9 +34,9 @@ class _TextIconButtonJO extends TextIconButtonJO {
 
   @override
   Widget build(BuildContext context) {
-    TextIconButtonTypeJO type =
-        (filled) ? TextIconButtonTypeJO.filled : TextIconButtonTypeJO.outlined;
-    return TextIconButtonWidgetJO(
+    NeusHubTextIconType type =
+        (filled) ? NeusHubTextIconType.filled : NeusHubTextIconType.outlined;
+    return NeusHubTextIconButtonWidget(
       reversed: reversed,
       icon: icon,
       label: label,
@@ -51,15 +57,15 @@ class _TextIconButtonJO extends TextIconButtonJO {
   }
 }
 
-class TextIconButtonJO extends StatelessWidget {
-  const TextIconButtonJO({
+class NeusHubTextIconButton extends StatelessWidget {
+  const NeusHubTextIconButton({
     super.key,
     required this.icon,
     required this.label,
     this.reversed = false,
     this.activated = false,
     this.onPressed,
-    this.only = TextIconButtonOnlyJO.normal,
+    this.only = NeusHubTextIconOnly.normal,
     this.iconSize,
     this.textSize,
     this.textWeight,
@@ -72,7 +78,7 @@ class TextIconButtonJO extends StatelessWidget {
   final String label;
   final bool reversed, activated;
   final void Function()? onPressed;
-  final TextIconButtonOnlyJO only;
+  final NeusHubTextIconOnly only;
   final double? iconSize, textSize;
   final FontWeight? textWeight;
   final TextDecoration? textDecoration;
@@ -81,7 +87,7 @@ class TextIconButtonJO extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextIconButtonWidgetJO(
+    return NeusHubTextIconButtonWidget(
       reversed: reversed,
       icon: icon,
       label: label,
@@ -98,11 +104,11 @@ class TextIconButtonJO extends StatelessWidget {
     );
   }
 
-  factory TextIconButtonJO.outlined({
+  factory NeusHubTextIconButton.outlined({
     Key? key,
     required IconData icon,
     required String label,
-    TextIconButtonOnlyJO only = TextIconButtonOnlyJO.normal,
+    NeusHubTextIconOnly only = NeusHubTextIconOnly.normal,
     bool reversed = false,
     bool activated = false,
     bool expanded = false,
@@ -116,7 +122,7 @@ class TextIconButtonJO extends StatelessWidget {
     BorderRadius? radius,
     MouseCursor? cursor,
   }) {
-    return _TextIconButtonJO(
+    return _NeusHubTextIconButton(
       key: key,
       icon: icon,
       label: label,
@@ -136,11 +142,11 @@ class TextIconButtonJO extends StatelessWidget {
     );
   }
 
-  factory TextIconButtonJO.filled({
+  factory NeusHubTextIconButton.filled({
     Key? key,
     required IconData icon,
     required String label,
-    TextIconButtonOnlyJO only = TextIconButtonOnlyJO.normal,
+    NeusHubTextIconOnly only = NeusHubTextIconOnly.normal,
     bool reversed = false,
     bool activated = false,
     bool expanded = false,
@@ -154,7 +160,7 @@ class TextIconButtonJO extends StatelessWidget {
     BorderRadius? radius,
     MouseCursor? cursor,
   }) {
-    return _TextIconButtonJO(
+    return _NeusHubTextIconButton(
       key: key,
       icon: icon,
       label: label,
@@ -176,12 +182,8 @@ class TextIconButtonJO extends StatelessWidget {
   }
 }
 
-enum TextIconButtonTypeJO { normal, filled, outlined }
-
-enum TextIconButtonOnlyJO { normal, textOnly, iconOnly }
-
-class TextIconButtonWidgetJO extends StatefulWidget {
-  const TextIconButtonWidgetJO({
+class NeusHubTextIconButtonWidget extends StatefulWidget {
+  const NeusHubTextIconButtonWidget({
     super.key,
     required this.reversed,
     required this.icon,
@@ -189,7 +191,7 @@ class TextIconButtonWidgetJO extends StatefulWidget {
     required this.only,
     required this.expanded,
     this.activated = false,
-    this.type = TextIconButtonTypeJO.normal,
+    this.type = NeusHubTextIconType.normal,
     this.onPressed,
     this.iconSize,
     this.textSize,
@@ -205,9 +207,9 @@ class TextIconButtonWidgetJO extends StatefulWidget {
   final bool reversed, activated, expanded;
   final IconData icon;
   final String label;
-  final TextIconButtonTypeJO type;
+  final NeusHubTextIconType type;
   final void Function()? onPressed;
-  final TextIconButtonOnlyJO only;
+  final NeusHubTextIconOnly only;
   final double? iconSize, textSize;
   final FontWeight? textWeight;
   final TextDecoration? textDecoration;
@@ -218,12 +220,13 @@ class TextIconButtonWidgetJO extends StatefulWidget {
   final MouseCursor? cursor;
 
   @override
-  State<TextIconButtonWidgetJO> createState() {
-    return _TextIconButtonWidgetJOState();
+  State<NeusHubTextIconButtonWidget> createState() {
+    return _NeusHubTextIconButtonWidgetState();
   }
 }
 
-class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
+class _NeusHubTextIconButtonWidgetState
+    extends State<NeusHubTextIconButtonWidget> {
   late bool hovered;
 
   @override
@@ -244,20 +247,20 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
       width: (widget.expanded) ? double.infinity : null,
       decoration: BoxDecoration(
         borderRadius:
-            (widget.radius == null) ? BorderRadius.circular(5) : widget.radius,
-        color: (widget.type == TextIconButtonTypeJO.filled)
+            (widget.radius == null) ? BorderRadius.circular(10) : widget.radius,
+        color: (widget.type == NeusHubTextIconType.filled)
             ? (hovered)
                 ? Theme.of(context).colorScheme.onPrimary
                 : widget.backgroundColor
             : null,
-        border: (widget.type == TextIconButtonTypeJO.outlined)
+        border: (widget.type == NeusHubTextIconType.outlined)
             ? Border.all(
                 color: (hovered)
                     ? Theme.of(context).colorScheme.onPrimary
                     : widget.backgroundColor,
                 width: 1,
               )
-            : (widget.type == TextIconButtonTypeJO.filled)
+            : (widget.type == NeusHubTextIconType.filled)
                 ? Border.all(
                     color: (hovered)
                         ? Theme.of(context).colorScheme.onPrimary
@@ -289,28 +292,27 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
               padding: (widget.padding == null)
                   ? EdgeInsets.symmetric(
                       vertical:
-                          widget.type == TextIconButtonTypeJO.normal ? 0 : 7.5,
+                          widget.type == NeusHubTextIconType.normal ? 0 : 7.5,
                       horizontal:
-                          widget.type == TextIconButtonTypeJO.normal ? 0 : 20,
+                          widget.type == NeusHubTextIconType.normal ? 0 : 20,
                     )
                   : widget.padding,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 textDirection: (widget.reversed) ? TextDirection.rtl : null,
                 children: [
-                  ...(widget.only == TextIconButtonOnlyJO.normal ||
-                          widget.only == TextIconButtonOnlyJO.iconOnly)
+                  ...(widget.only == NeusHubTextIconOnly.normal ||
+                          widget.only == NeusHubTextIconOnly.iconOnly)
                       ? [
                           Icon(
                             widget.icon,
-                            color: (widget.type ==
-                                    TextIconButtonTypeJO.outlined)
+                            color: (widget.type == NeusHubTextIconType.outlined)
                                 ? (hovered)
                                     ? Theme.of(context).colorScheme.onPrimary
                                     : (widget.color == null)
                                         ? Theme.of(context).colorScheme.primary
                                         : widget.color
-                                : (widget.type == TextIconButtonTypeJO.filled)
+                                : (widget.type == NeusHubTextIconType.filled)
                                     ? (hovered)
                                         ? Theme.of(context)
                                             .scaffoldBackgroundColor
@@ -331,10 +333,10 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
                           ),
                         ]
                       : [],
-                  ...(widget.only == TextIconButtonOnlyJO.normal ||
-                          widget.only == TextIconButtonOnlyJO.textOnly)
+                  ...(widget.only == NeusHubTextIconOnly.normal ||
+                          widget.only == NeusHubTextIconOnly.textOnly)
                       ? [
-                          ...(widget.only == TextIconButtonOnlyJO.textOnly)
+                          ...(widget.only == NeusHubTextIconOnly.textOnly)
                               ? []
                               : [
                                   Text(
@@ -353,7 +355,7 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
                                       ? Theme.of(context).colorScheme.secondary
                                       : widget.color,
                               color: (widget.type ==
-                                      TextIconButtonTypeJO.outlined)
+                                      NeusHubTextIconType.outlined)
                                   ? (hovered)
                                       ? Theme.of(context).colorScheme.onPrimary
                                       : (widget.color == null)
@@ -361,7 +363,7 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
                                               .colorScheme
                                               .primary
                                           : widget.color
-                                  : (widget.type == TextIconButtonTypeJO.filled)
+                                  : (widget.type == NeusHubTextIconType.filled)
                                       ? (hovered)
                                           ? Theme.of(context)
                                               .scaffoldBackgroundColor
@@ -389,6 +391,192 @@ class _TextIconButtonWidgetJOState extends State<TextIconButtonWidgetJO> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+enum NeusHubTextIconFieldType {
+  name,
+  email,
+  password,
+  confirmPassword,
+}
+
+class _NeusHubTextIconField extends NeusHubTextIconField {
+  const _NeusHubTextIconField({
+    super.key,
+    super.only,
+    super.expanded,
+    required super.fieldType,
+    required this.type,
+  });
+
+  final NeusHubTextIconType type;
+
+  @override
+  Widget build(BuildContext context) {
+    return NeusHubTextIconFieldWidget(
+      key: key,
+      only: only,
+      expanded: expanded,
+      fieldType: fieldType,
+      type: type,
+    );
+  }
+}
+
+class NeusHubTextIconField extends StatelessWidget {
+  const NeusHubTextIconField({
+    super.key,
+    required this.fieldType,
+    this.only = NeusHubTextIconOnly.normal,
+    this.expanded = false,
+  });
+
+  final NeusHubTextIconOnly only;
+  final bool expanded;
+  final NeusHubTextIconFieldType fieldType;
+
+  @override
+  Widget build(BuildContext context) {
+    return NeusHubTextIconFieldWidget(
+      key: key,
+      only: only,
+      expanded: expanded,
+      fieldType: fieldType,
+      type: NeusHubTextIconType.normal,
+    );
+  }
+
+  factory NeusHubTextIconField.filled({
+    Key? key,
+    NeusHubTextIconOnly only = NeusHubTextIconOnly.normal,
+    bool expanded = false,
+    required NeusHubTextIconFieldType fieldType,
+  }) {
+    return _NeusHubTextIconField(
+      key: key,
+      only: only,
+      expanded: expanded,
+      fieldType: fieldType,
+      type: NeusHubTextIconType.filled,
+    );
+  }
+
+  factory NeusHubTextIconField.outlined({
+    Key? key,
+    NeusHubTextIconOnly only = NeusHubTextIconOnly.normal,
+    bool expanded = false,
+    required NeusHubTextIconFieldType fieldType,
+  }) {
+    return _NeusHubTextIconField(
+      key: key,
+      only: only,
+      expanded: expanded,
+      fieldType: fieldType,
+      type: NeusHubTextIconType.outlined,
+    );
+  }
+}
+
+class NeusHubTextIconFieldWidget extends StatelessWidget {
+  const NeusHubTextIconFieldWidget({
+    super.key,
+    required this.only,
+    required this.expanded,
+    required this.fieldType,
+    required this.type,
+  });
+
+  final NeusHubTextIconOnly only;
+  final NeusHubTextIconFieldType fieldType;
+  final NeusHubTextIconType type;
+  final bool expanded;
+
+  Icon iconNeusHubTextIconField(NeusHubTextIconFieldType fieldType) {
+    return Icon(switch (fieldType) {
+      NeusHubTextIconFieldType.name => NeusHubIcons.name,
+      NeusHubTextIconFieldType.email => NeusHubIcons.email,
+      NeusHubTextIconFieldType.password ||
+      NeusHubTextIconFieldType.confirmPassword =>
+        NeusHubIcons.lock,
+    });
+  }
+
+  String placeholderNeusHubTextIconField(NeusHubTextIconFieldType fieldType) {
+    return switch (fieldType) {
+      NeusHubTextIconFieldType.name => 'Abdelrahman Ahmed',
+      NeusHubTextIconFieldType.email => 'Abdelrahmanahmed@example.com',
+      NeusHubTextIconFieldType.password ||
+      NeusHubTextIconFieldType.confirmPassword =>
+        'Password',
+    };
+  }
+
+  String labelNeusHubTextIconField(NeusHubTextIconFieldType fieldType) {
+    return switch (fieldType) {
+      NeusHubTextIconFieldType.name => 'Full name',
+      NeusHubTextIconFieldType.email => 'Email',
+      NeusHubTextIconFieldType.password => 'Password',
+      NeusHubTextIconFieldType.confirmPassword => 'Confirm password',
+    };
+  }
+
+  IconData? suffixNeusHubTextIconField(NeusHubTextIconFieldType fieldType) {
+    return switch (fieldType) {
+      NeusHubTextIconFieldType.password ||
+      NeusHubTextIconFieldType.confirmPassword =>
+        NeusHubIcons.eye,
+      _ => null,
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          labelNeusHubTextIconField(fieldType),
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        ),
+        SizedBox(height: 5),
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          margin: EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(
+            color: switch (type) {
+              NeusHubTextIconType.filled =>
+                Theme.of(context).colorScheme.onSurface,
+              _ => null,
+            },
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TextField(
+            scrollPadding: EdgeInsets.zero,
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            decoration: InputDecoration(
+              isDense: true,
+              border: InputBorder.none,
+              icon: (only == NeusHubTextIconOnly.textOnly)
+                  ? null
+                  : iconNeusHubTextIconField(fieldType),
+              iconColor: Theme.of(context).colorScheme.primary,
+              contentPadding: EdgeInsets.zero,
+              hintText: placeholderNeusHubTextIconField(fieldType),
+              hintStyle: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              suffix: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Icon(suffixNeusHubTextIconField(fieldType)),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

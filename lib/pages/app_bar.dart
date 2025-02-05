@@ -5,6 +5,7 @@ import 'package:neushub/pages/sign.dart';
 
 import '../theme.dart';
 import '../inheritance.dart';
+import '../widgets.dart';
 import '../main.dart';
 
 class NeusHubAppBarMenu {
@@ -29,10 +30,10 @@ class NeusHubAppBarMenu {
             builder: (context, child) {
               return Consumer<NeusHubHover<bool>>(
                 builder: (context, value, child) {
-                  return TextIconButtonJO(
+                  return NeusHubTextIconButton(
                     icon: Icons.menu,
                     label: '',
-                    only: TextIconButtonOnlyJO.iconOnly,
+                    only: NeusHubTextIconOnly.iconOnly,
                     activated: value.flag,
                     onPressed: () {
                       showDialog(
@@ -58,10 +59,10 @@ class NeusHubAppBarMenu {
                                       menuFlag: true,
                                       scrollController: scrollController,
                                     ),
-                                    TextIconButtonJO(
+                                    NeusHubTextIconButton(
                                       icon: Icons.close,
                                       label: '',
-                                      only: TextIconButtonOnlyJO.iconOnly,
+                                      only: NeusHubTextIconOnly.iconOnly,
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
@@ -153,10 +154,10 @@ class NeusHubSignButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextIconButtonJO.filled(
+    return NeusHubTextIconButton.filled(
       icon: Icons.abc,
       label: 'Grow your audience today',
-      only: TextIconButtonOnlyJO.textOnly,
+      only: NeusHubTextIconOnly.textOnly,
       expanded: expanded,
       onPressed: () async {
         if (await nodeAPI.connection() == 200) {
@@ -262,10 +263,10 @@ class NeusHubAppBarTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: (menuFlag) ? 0 : 10),
-      child: TextIconButtonJO(
+      child: NeusHubTextIconButton(
         icon: Icons.abc,
         label: tab,
-        only: TextIconButtonOnlyJO.textOnly,
+        only: NeusHubTextIconOnly.textOnly,
         onPressed: () {
           try {
             if (menuFlag) {

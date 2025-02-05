@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 abstract final class NeusHubColors {
   static final Color purple = Color(0xFF792ecc),
       grey = Color(0xFFb3b3b3),
+      greyDark = Color(0xFF121212),
       white = Colors.white,
       black = Colors.black,
       blackLight = Color(0xFFb3b3b3).withAlpha(128),
-      blackDark = Color(0xFF121212),
+      blackDark = Color(0xFFE5E5E5),
       transparent = Colors.transparent,
       error = Color(0xFFff8080);
 }

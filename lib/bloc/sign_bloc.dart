@@ -16,12 +16,9 @@ class NeusHubSignBloc extends Bloc<NeusHubSignEvent, NeusHubSignState> {
 
   NeusHubSignBloc() : super(NeusHubSignInitial()) {
     on<NeusHubSignEvent>((event, emit) {
-      if (event is NeusHubSignInEvent) {
+      if (event is NeusHubSignChangePageEvent) {
         signType = event.signType;
-        emit(NeusHubSignChangedState(signType));
-      } else if (event is NeusHubSignUpEvent) {
-        signType = event.signType;
-        emit(NeusHubSignChangedState(signType));
+        emit(NeusHubSignPageChangedState(signType));
       }
     });
   }

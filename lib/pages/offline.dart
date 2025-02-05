@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neushub/theme.dart';
 
 import '../icons.dart';
-import '../main.dart';
+import '../widgets.dart';
 
 class NeusHubOfflinePage extends StatelessWidget {
   const NeusHubOfflinePage({
@@ -38,7 +38,7 @@ class NeusHubOfflinePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              TextIconButtonJO.filled(
+              NeusHubTextIconButton.filled(
                 icon: Icons.replay,
                 label: 'Retry',
                 padding: EdgeInsets.all(5),

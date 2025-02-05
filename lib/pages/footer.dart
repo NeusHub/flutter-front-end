@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme.dart';
 import '../icons.dart';
-import '../main.dart';
+import '../widgets.dart';
 
 class NeusHubFooter extends StatelessWidget {
   const NeusHubFooter({
@@ -22,7 +22,7 @@ class NeusHubFooter extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onSurface,
+        color: NeusHubColors.greyDark,
       ),
       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
       alignment: Alignment.center,
@@ -32,10 +32,10 @@ class NeusHubFooter extends StatelessWidget {
           NeusHubFooterColumn(
             mobileFlag: mobileFlag,
             children: [
-              TextIconButtonJO(
+              NeusHubTextIconButton(
                 icon: Icons.abc,
                 label: 'NeusHub',
-                only: TextIconButtonOnlyJO.textOnly,
+                only: NeusHubTextIconOnly.textOnly,
                 textSize: 20,
                 textWeight: FontWeight.w700,
                 color: Theme.of(context).scaffoldBackgroundColor,
@@ -55,10 +55,10 @@ class NeusHubFooter extends StatelessWidget {
                   (tab) => Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.only(bottom: 5),
-                    child: TextIconButtonJO(
+                    child: NeusHubTextIconButton(
                       icon: Icons.abc,
                       label: tab,
-                      only: TextIconButtonOnlyJO.textOnly,
+                      only: NeusHubTextIconOnly.textOnly,
                       color: Theme.of(context).scaffoldBackgroundColor,
                       textDecoration: TextDecoration.underline,
                     ),
@@ -76,10 +76,10 @@ class NeusHubFooter extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 5),
-              TextIconButtonJO(
+              NeusHubTextIconButton(
                 icon: Icons.abc,
                 label: 'hallo@naushub.com',
-                only: TextIconButtonOnlyJO.textOnly,
+                only: NeusHubTextIconOnly.textOnly,
                 color: Theme.of(context).scaffoldBackgroundColor,
                 textDecoration: TextDecoration.underline,
               ),
@@ -98,24 +98,24 @@ class NeusHubFooter extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  TextIconButtonJO(
+                  NeusHubTextIconButton(
                     icon: NeusHubIcons.facebook,
                     label: '',
-                    only: TextIconButtonOnlyJO.iconOnly,
+                    only: NeusHubTextIconOnly.iconOnly,
                     color: Theme.of(context).scaffoldBackgroundColor,
                   ),
                   SizedBox(width: 10),
-                  TextIconButtonJO(
+                  NeusHubTextIconButton(
                     icon: NeusHubIcons.x,
                     label: '',
-                    only: TextIconButtonOnlyJO.iconOnly,
+                    only: NeusHubTextIconOnly.iconOnly,
                     color: Theme.of(context).scaffoldBackgroundColor,
                   ),
                   SizedBox(width: 10),
-                  TextIconButtonJO(
+                  NeusHubTextIconButton(
                     icon: NeusHubIcons.linkedin,
                     label: '',
-                    only: TextIconButtonOnlyJO.iconOnly,
+                    only: NeusHubTextIconOnly.iconOnly,
                     color: Theme.of(context).scaffoldBackgroundColor,
                   ),
                 ],

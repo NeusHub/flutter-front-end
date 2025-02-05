@@ -11,7 +11,6 @@ import 'package:neushub/pages/footer.dart';
 
 import './theme.dart';
 import './nodejsapi.dart';
-part './widgets.dart';
 
 Map<String, Widget> pages = {
   'Home': NeusHubHomePage(

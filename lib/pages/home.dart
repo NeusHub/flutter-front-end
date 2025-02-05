@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:neushub/pages/app_bar.dart';
 
 import '../theme.dart';
-import '../main.dart';
+import '../widgets.dart';
 
 class NeusHubHomePage extends StatelessWidget {
   const NeusHubHomePage({super.key});
@@ -63,10 +63,10 @@ class NeusHubHomePage extends StatelessWidget {
                 (MediaQuery.sizeOf(context).width < mobileSize.width)
                     ? Column(
                         children: [
-                          TextIconButtonJO.filled(
+                          NeusHubTextIconButton.filled(
                             icon: Icons.abc,
                             label: 'Find Newsletter',
-                            only: TextIconButtonOnlyJO.textOnly,
+                            only: NeusHubTextIconOnly.textOnly,
                             activated: true,
                             expanded: true,
                           ),
@@ -79,10 +79,10 @@ class NeusHubHomePage extends StatelessWidget {
                       )
                     : Row(
                         children: [
-                          TextIconButtonJO.filled(
+                          NeusHubTextIconButton.filled(
                             icon: Icons.abc,
                             label: 'Find Newsletter',
-                            only: TextIconButtonOnlyJO.textOnly,
+                            only: NeusHubTextIconOnly.textOnly,
                             activated: true,
                           ),
                           SizedBox(width: 20),

@@ -39,10 +39,16 @@ flutter:
     - family: offline
       fonts:
         - asset: fonts/icons/offline.ttf
+    - family: sign
+      fonts:
+        - asset: fonts/icons/sign.ttf
 
   assets:
     - assets/images/main.png
     - assets/images/offline_background.png
     - assets/images/sign.png
+    - assets/images/about_owner.png
+    - assets/images/about_finder.png
+    - assets/images/about_magic.png
 
   uses-material-design: true
