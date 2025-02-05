@@ -508,7 +508,7 @@ class NeusHubTextIconFieldWidget extends StatelessWidget {
   String placeholderNeusHubTextIconField(NeusHubTextIconFieldType fieldType) {
     return switch (fieldType) {
       NeusHubTextIconFieldType.name => 'Abdelrahman Ahmed',
-      NeusHubTextIconFieldType.email => 'Abdelrahmanahmed@example.com',
+      NeusHubTextIconFieldType.email => 'Abdelrahman@example.com',
       NeusHubTextIconFieldType.password ||
       NeusHubTextIconFieldType.confirmPassword =>
         'Password',
@@ -547,13 +547,21 @@ class NeusHubTextIconFieldWidget extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           margin: EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
-            color: switch (type) {
-              NeusHubTextIconType.filled =>
-                Theme.of(context).colorScheme.onSurface,
-              _ => null,
-            },
-            borderRadius: BorderRadius.circular(10),
-          ),
+              color: switch (type) {
+                NeusHubTextIconType.filled ||
+                NeusHubTextIconType.outlined =>
+                  Theme.of(context).colorScheme.onSurface,
+                _ => null,
+              },
+              borderRadius: BorderRadius.circular(10),
+              border: switch (type) {
+                NeusHubTextIconType.outlined => Border.all(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                _ => Border.all(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+              }),
           child: TextField(
             scrollPadding: EdgeInsets.zero,
             style: TextStyle(color: Theme.of(context).colorScheme.primary),

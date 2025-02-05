@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 class NeusHubNodeAPI {
@@ -27,5 +29,23 @@ class NeusHubNodeAPI {
     }
 
     return response.statusCode;
+  }
+
+  Future<void> signUp() async {
+    Uri uri = Uri.parse(
+      'http${(secured) ? 's' : ''}://$host/signup',
+    );
+
+    await http.post(
+      uri,
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: jsonEncode({
+        'email': 'jo@jo.jo',
+        'full_name': 'jo',
+        'password': 'jo',
+      }),
+    );
   }
 }

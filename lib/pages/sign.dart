@@ -6,7 +6,6 @@ import 'package:neushub/pages/app_bar.dart';
 import 'package:neushub/bloc/sign_bloc.dart';
 
 import '../theme.dart';
-import '../icons.dart';
 import '../widgets.dart';
 
 class NeusHubSignDialog extends Dialog {
@@ -105,10 +104,81 @@ class NeusHubSignDialog extends Dialog {
                   ),
                 ),
                 Expanded(
-                  child: switch (signType(state)) {
-                    NeusHubSignType.signUp => NeusHubSignUpPage(),
-                    _ => NeusHubSignInPage(),
-                  },
+                  child: Row(
+                    mainAxisAlignment: (MediaQuery.sizeOf(context).width <
+                            mobileSize.width + 100)
+                        ? MainAxisAlignment.center
+                        : MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        width: 325,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(text: 'Welcome to '),
+                                  TextSpan(
+                                    text: 'Neus',
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                    ),
+                                  ),
+                                  TextSpan(text: 'Hub'),
+                                ],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 30,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(text: 'With '),
+                                  TextSpan(
+                                    text: 'NausHub',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        ' dashboard you can track analytics of how your newsletter doing in our platform.',
+                                  ),
+                                ],
+                                style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            switch (signType(state)) {
+                              NeusHubSignType.signUp => NeusHubSignUpPage(),
+                              _ => NeusHubSignInPage(),
+                            },
+                          ],
+                        ),
+                      ),
+                      Visibility(
+                        visible: !(MediaQuery.sizeOf(context).width <
+                            mobileSize.width + 100),
+                        child: SizedBox(
+                          width: 400,
+                          child: Image.asset('assets/images/sign.png',
+                              fit: BoxFit.contain),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );
@@ -124,91 +194,21 @@ class NeusHubSignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment:
-          (MediaQuery.sizeOf(context).width < mobileSize.width + 100)
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.spaceAround,
+    return Column(
       children: [
-        SizedBox(
-          width: 475,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(text: 'Welcome to '),
-                    TextSpan(
-                      text: 'Neus',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                    ),
-                    TextSpan(text: 'Hub'),
-                  ],
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 44,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(text: 'With '),
-                    TextSpan(
-                      text: 'NausHub',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                    TextSpan(
-                      text:
-                          ' dashboard you can track analytics of how your newsletter doing in our platform.',
-                    ),
-                  ],
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Form(
-                child: SizedBox(
-                  width: 380,
-                  child: Column(
-                    children: [
-                      NeusHubTextIconField.filled(
-                        fieldType: NeusHubTextIconFieldType.email,
-                      ),
-                      NeusHubTextIconField.filled(
-                        fieldType: NeusHubTextIconFieldType.password,
-                      ),
-                      SizedBox(height: 5),
-                      NeusHubTextIconButton.filled(
-                        icon: Icons.abc,
-                        label: 'Sign in',
-                        only: NeusHubTextIconOnly.textOnly,
-                        expanded: true,
-                        activated: true,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+        NeusHubTextIconField.filled(
+          fieldType: NeusHubTextIconFieldType.email,
         ),
-        Visibility(
-          visible: !(MediaQuery.sizeOf(context).width < mobileSize.width + 100),
-          child: SizedBox(
-            width: 400,
-            child: Image.asset('assets/images/sign.png', fit: BoxFit.contain),
-          ),
+        NeusHubTextIconField.filled(
+          fieldType: NeusHubTextIconFieldType.password,
+        ),
+        SizedBox(height: 5),
+        NeusHubTextIconButton.filled(
+          icon: Icons.abc,
+          label: 'Sign in',
+          only: NeusHubTextIconOnly.textOnly,
+          expanded: true,
+          activated: true,
         ),
       ],
     );
@@ -220,100 +220,31 @@ class NeusHubSignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment:
-          (MediaQuery.sizeOf(context).width < mobileSize.width + 100)
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.spaceAround,
-      children: [
-        SizedBox(
-          width: 475,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(text: 'Welcome to '),
-                    TextSpan(
-                      text: 'Neus',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                    ),
-                    TextSpan(text: 'Hub'),
-                  ],
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 44,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(text: 'With '),
-                    TextSpan(
-                      text: 'NausHub',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                    TextSpan(
-                      text:
-                          ' dashboard you can track analytics of how your newsletter doing in our platform.',
-                    ),
-                  ],
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Form(
-                child: SizedBox(
-                  width: 380,
-                  child: Column(
-                    children: [
-                      NeusHubTextIconField.filled(
-                        fieldType: NeusHubTextIconFieldType.name,
-                      ),
-                      NeusHubTextIconField.filled(
-                        fieldType: NeusHubTextIconFieldType.email,
-                      ),
-                      NeusHubTextIconField.filled(
-                        fieldType: NeusHubTextIconFieldType.password,
-                      ),
-                      NeusHubTextIconField.filled(
-                        fieldType: NeusHubTextIconFieldType.confirmPassword,
-                      ),
-                      SizedBox(height: 5),
-                      NeusHubTextIconButton.filled(
-                        icon: Icons.abc,
-                        label: 'Sign up',
-                        only: NeusHubTextIconOnly.textOnly,
-                        expanded: true,
-                        activated: true,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+    return Form(
+      child: Column(
+        children: [
+          NeusHubTextIconField.filled(
+            fieldType: NeusHubTextIconFieldType.name,
           ),
-        ),
-        Visibility(
-          visible: !(MediaQuery.sizeOf(context).width < mobileSize.width + 100),
-          child: SizedBox(
-            width: 400,
-            child: Image.asset('assets/images/sign.png', fit: BoxFit.contain),
+          NeusHubTextIconField.filled(
+            fieldType: NeusHubTextIconFieldType.email,
           ),
-        ),
-      ],
+          NeusHubTextIconField.filled(
+            fieldType: NeusHubTextIconFieldType.password,
+          ),
+          NeusHubTextIconField.filled(
+            fieldType: NeusHubTextIconFieldType.confirmPassword,
+          ),
+          SizedBox(height: 5),
+          NeusHubTextIconButton.filled(
+            icon: Icons.abc,
+            label: 'Sign up',
+            only: NeusHubTextIconOnly.textOnly,
+            expanded: true,
+            activated: true,
+          ),
+        ],
+      ),
     );
-    ;
   }
 }
