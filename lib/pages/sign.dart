@@ -7,6 +7,7 @@ import 'package:neushub/bloc/sign_bloc.dart';
 
 import '../theme.dart';
 import '../widgets.dart';
+import '../main.dart';
 
 class NeusHubSignDialog extends Dialog {
   const NeusHubSignDialog({super.key});
@@ -166,19 +167,10 @@ class NeusHubSignDialog extends Dialog {
                               ),
                             ),
                             SizedBox(height: 10),
-                            BlocProvider<NeusHubSignActionBloc>(
-                              create: (context) => NeusHubSignActionBloc(),
-                              child: BlocBuilder<NeusHubSignActionBloc,
-                                  NeusHubSignActionState>(
-                                builder: (context, stateSign) {
-                                  return switch (signType(state)) {
-                                    NeusHubSignType.signUp =>
-                                      NeusHubSignUpPage(state: stateSign),
-                                    _ => NeusHubSignInPage(state: stateSign),
-                                  };
-                                },
-                              ),
-                            ),
+                            switch (signType(state)) {
+                              NeusHubSignType.signUp => NeusHubSignUpPage(),
+                              _ => NeusHubSignInPage(),
+                            },
                           ],
                         ),
                       ),
@@ -206,10 +198,7 @@ class NeusHubSignDialog extends Dialog {
 class NeusHubSignInPage extends StatefulWidget {
   const NeusHubSignInPage({
     super.key,
-    required this.state,
   });
-
-  final NeusHubSignActionState state;
 
   @override
   State<NeusHubSignInPage> createState() => _NeusHubSignInPageState();
@@ -217,22 +206,47 @@ class NeusHubSignInPage extends StatefulWidget {
 
 class _NeusHubSignInPageState extends State<NeusHubSignInPage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  late final TextEditingController emailController, passworrdContoller;
 
-  bool remember = false;
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passworrdContoller = TextEditingController();
+    super.initState();
+  }
 
-  bool valid = false;
+  @override
+  void dispose() {
+    emailController.dispose();
+    passworrdContoller.dispose();
+    super.dispose();
+  }
 
-  void validate(String email, String password) {
+  bool remember = false, valid = false;
+
+  void signValidate(String email, String password) {
     setState(() {
-      valid = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
-          RegExp(
-            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
-          ).hasMatch(password);
+      if (RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
+          RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+              .hasMatch(password)) {
+        valid = true;
+      } else {
+        valid = false;
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (valid) {
+      nodeAPI.signIn(
+        emailController.text,
+        passworrdContoller.text,
+        '',
+        remember,
+      );
+    }
+
     return Form(
       key: formKey,
       child: Column(
@@ -240,30 +254,12 @@ class _NeusHubSignInPageState extends State<NeusHubSignInPage> {
           NeusHubTextIconField.filled(
             formKey: formKey,
             fieldType: NeusHubTextIconFieldType.email,
-            onChanged: (p0) {
-              BlocProvider.of<NeusHubSignActionBloc>(context).add(
-                NeusHubSignInActionEvent(
-                  email: p0,
-                  password: (widget.state is NeusHubSignActionChangedState)
-                      ? (widget.state as NeusHubSignActionChangedState).password
-                      : null,
-                ),
-              );
-            },
+            contrroller: emailController,
           ),
           NeusHubTextIconField.filled(
             formKey: formKey,
             fieldType: NeusHubTextIconFieldType.password,
-            onChanged: (p0) {
-              BlocProvider.of<NeusHubSignActionBloc>(context).add(
-                NeusHubSignInActionEvent(
-                  password: p0,
-                  email: (widget.state is NeusHubSignActionChangedState)
-                      ? (widget.state as NeusHubSignActionChangedState).password
-                      : null,
-                ),
-              );
-            },
+            contrroller: passworrdContoller,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -319,13 +315,7 @@ class _NeusHubSignInPageState extends State<NeusHubSignInPage> {
             expanded: true,
             activated: true,
             onPressed: () {
-              if (widget.state is NeusHubSignActionChangedState) {
-                validate(
-                  (widget.state as NeusHubSignActionChangedState).email ?? '',
-                  (widget.state as NeusHubSignActionChangedState).password ??
-                      '',
-                );
-              }
+              signValidate(emailController.text, passworrdContoller.text);
             },
           ),
         ],
@@ -335,12 +325,9 @@ class _NeusHubSignInPageState extends State<NeusHubSignInPage> {
 }
 
 class NeusHubSignUpPage extends StatefulWidget {
-  NeusHubSignUpPage({
+  const NeusHubSignUpPage({
     super.key,
-    required this.state,
   });
-
-  final NeusHubSignActionState state;
 
   @override
   State<NeusHubSignUpPage> createState() => _NeusHubSignUpPageState();
@@ -348,20 +335,57 @@ class NeusHubSignUpPage extends StatefulWidget {
 
 class _NeusHubSignUpPageState extends State<NeusHubSignUpPage> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  late final TextEditingController emailController,
+      passworrdContoller,
+      confirmPasswordController,
+      nameController;
 
-  bool validate(String email, String password) {
-    if (RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
-        RegExp(
-          r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
-        ).hasMatch(password)) {
-      return true;
-    } else {
-      return false;
-    }
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passworrdContoller = TextEditingController();
+    confirmPasswordController = TextEditingController();
+    nameController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passworrdContoller.dispose();
+    confirmPasswordController.dispose();
+    nameController.dispose();
+    super.dispose();
+  }
+
+  bool valid = false;
+
+  void signValidate(
+    String email,
+    String password,
+    String confirmPassword,
+    String name,
+  ) {
+    setState(() {
+      if (RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
+          RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+              .hasMatch(password) &&
+          RegExp(r'^[a-zA-Z\s]+$').hasMatch(name) &&
+          password == confirmPassword) {
+        valid = true;
+      } else {
+        valid = false;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (valid) {
+      nodeAPI.signUp(
+          emailController.text, nameController.text, passworrdContoller.text);
+    }
+
     return Form(
       key: formKey,
       child: Column(
@@ -369,18 +393,22 @@ class _NeusHubSignUpPageState extends State<NeusHubSignUpPage> {
           NeusHubTextIconField.filled(
             formKey: formKey,
             fieldType: NeusHubTextIconFieldType.name,
+            contrroller: nameController,
           ),
           NeusHubTextIconField.filled(
             formKey: formKey,
             fieldType: NeusHubTextIconFieldType.email,
+            contrroller: emailController,
           ),
           NeusHubTextIconField.filled(
             formKey: formKey,
             fieldType: NeusHubTextIconFieldType.password,
+            contrroller: passworrdContoller,
           ),
           NeusHubTextIconField.filled(
             formKey: formKey,
             fieldType: NeusHubTextIconFieldType.confirmPassword,
+            contrroller: confirmPasswordController,
           ),
           SizedBox(height: 5),
           NeusHubTextIconButton.filled(
@@ -390,7 +418,12 @@ class _NeusHubSignUpPageState extends State<NeusHubSignUpPage> {
             expanded: true,
             activated: true,
             onPressed: () {
-              formKey.currentState?.validate();
+              signValidate(
+                emailController.text,
+                passworrdContoller.text,
+                confirmPasswordController.text,
+                nameController.text,
+              );
             },
           ),
         ],

@@ -12,7 +12,7 @@ import 'package:neushub/pages/footer.dart';
 import './theme.dart';
 import './nodejsapi.dart';
 
-Map<String, Widget> pages = {
+final Map<String, Widget> pages = {
   'Home': NeusHubHomePage(
     key: GlobalKey(debugLabel: 'Home'),
   ),
@@ -26,6 +26,9 @@ Map<String, Widget> pages = {
     key: GlobalKey(debugLabel: 'Contact Us'),
   ),
 };
+
+final GlobalKey<_NeusHubAppState> rootKey =
+    GlobalKey<_NeusHubAppState>(debugLabel: 'root');
 
 NeusHubNodeAPI nodeAPI = NeusHubNodeAPI(
   '127.0.0.1',
@@ -76,6 +79,10 @@ class _NeusHubAppState extends State<NeusHubApp> {
     super.initState();
   }
 
+  void refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     GlobalKey appBarKey = GlobalKey(debugLabel: 'app bar');
@@ -101,43 +108,43 @@ class _NeusHubAppState extends State<NeusHubApp> {
           body: FutureBuilder<int>(
             future: widget.nodeAPI.connection(),
             builder: (context, builder) {
-              return SingleChildScrollView(
-                controller: _scrollController,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: pages.values.toList(),
-                      ),
-                    ),
-                    NeusHubFooter(tabs: pages.keys.skip(1)),
-                  ],
-                ),
-              );
-              // if (builder.connectionState == ConnectionState.done &&
-              //     !builder.hasError) {
-              //   return SingleChildScrollView(
-              //     controller: _scrollController,
-              //     child: Column(
-              //       children: [
-              //         Padding(
-              //           padding: EdgeInsets.symmetric(horizontal: 20),
-              //           child: Column(
-              //             children: pages.values.toList(),
-              //           ),
+              // return SingleChildScrollView(
+              //   controller: _scrollController,
+              //   child: Column(
+              //     children: [
+              //       Padding(
+              //         padding: EdgeInsets.symmetric(horizontal: 20),
+              //         child: Column(
+              //           children: pages.values.toList(),
               //         ),
-              //         NeusHubFooter(tabs: pages.keys.skip(1)),
-              //       ],
-              //     ),
-              //   );
-              // } else {
-              //   return NeusHubOfflinePage(
-              //     onPressed: () {
-              //       setState(() {});
-              //     },
-              //   );
-              // }
+              //       ),
+              //       NeusHubFooter(tabs: pages.keys.skip(1)),
+              //     ],
+              //   ),
+              // );
+              if (builder.connectionState == ConnectionState.done &&
+                  !builder.hasError) {
+                return SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          children: pages.values.toList(),
+                        ),
+                      ),
+                      NeusHubFooter(tabs: pages.keys.skip(1)),
+                    ],
+                  ),
+                );
+              } else {
+                return NeusHubOfflinePage(
+                  onPressed: () {
+                    setState(() {});
+                  },
+                );
+              }
             },
           ),
         ),

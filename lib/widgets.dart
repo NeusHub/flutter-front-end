@@ -409,7 +409,7 @@ class _NeusHubTextIconField extends NeusHubTextIconField {
     super.key,
     super.only,
     super.expanded,
-    super.onChanged,
+    required super.contrroller,
     required super.fieldType,
     required super.formKey,
     required this.type,
@@ -426,7 +426,7 @@ class _NeusHubTextIconField extends NeusHubTextIconField {
       fieldType: fieldType,
       formKey: formKey,
       type: type,
-      onChanged: onChanged,
+      contrroller: contrroller,
     );
   }
 }
@@ -438,14 +438,14 @@ class NeusHubTextIconField extends StatelessWidget {
     required this.formKey,
     this.only = NeusHubTextIconOnly.normal,
     this.expanded = false,
-    this.onChanged,
+    required this.contrroller,
   });
 
   final NeusHubTextIconOnly only;
   final bool expanded;
   final NeusHubTextIconFieldType fieldType;
   final GlobalKey<FormState> formKey;
-  final void Function(String?)? onChanged;
+  final TextEditingController contrroller;
 
   @override
   Widget build(BuildContext context) {
@@ -456,7 +456,7 @@ class NeusHubTextIconField extends StatelessWidget {
       fieldType: fieldType,
       formKey: formKey,
       type: NeusHubTextIconType.normal,
-      onChanged: onChanged,
+      contrroller: contrroller,
     );
   }
 
@@ -466,7 +466,7 @@ class NeusHubTextIconField extends StatelessWidget {
     bool expanded = false,
     required NeusHubTextIconFieldType fieldType,
     required GlobalKey<FormState> formKey,
-    void Function(String?)? onChanged,
+    required TextEditingController contrroller,
   }) {
     return _NeusHubTextIconField(
       key: key,
@@ -475,7 +475,7 @@ class NeusHubTextIconField extends StatelessWidget {
       fieldType: fieldType,
       formKey: formKey,
       type: NeusHubTextIconType.filled,
-      onChanged: onChanged,
+      contrroller: contrroller,
     );
   }
 
@@ -485,7 +485,7 @@ class NeusHubTextIconField extends StatelessWidget {
     bool expanded = false,
     required NeusHubTextIconFieldType fieldType,
     required GlobalKey<FormState> formKey,
-    void Function(String?)? onChanged,
+    required TextEditingController contrroller,
   }) {
     return _NeusHubTextIconField(
       key: key,
@@ -494,7 +494,7 @@ class NeusHubTextIconField extends StatelessWidget {
       fieldType: fieldType,
       formKey: formKey,
       type: NeusHubTextIconType.outlined,
-      onChanged: onChanged,
+      contrroller: contrroller,
     );
   }
 }
@@ -507,7 +507,7 @@ class NeusHubTextIconFieldWidget extends StatefulWidget {
     required this.fieldType,
     required this.formKey,
     required this.type,
-    this.onChanged,
+    required this.contrroller,
   });
 
   final NeusHubTextIconOnly only;
@@ -515,7 +515,7 @@ class NeusHubTextIconFieldWidget extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final NeusHubTextIconType type;
   final bool expanded;
-  final void Function(String?)? onChanged;
+  final TextEditingController contrroller;
 
   @override
   State<NeusHubTextIconFieldWidget> createState() =>
@@ -524,21 +524,8 @@ class NeusHubTextIconFieldWidget extends StatefulWidget {
 
 class _NeusHubTextIconFieldWidgetState
     extends State<NeusHubTextIconFieldWidget> {
-  late TextEditingController _textEditingController;
-
   Widget? error;
-
-  @override
-  void initState() {
-    _textEditingController = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _textEditingController.dispose();
-    super.dispose();
-  }
+  bool hide = true;
 
   Icon iconNeusHubTextIconField(NeusHubTextIconFieldType fieldType) {
     return Icon(switch (fieldType) {
@@ -624,8 +611,20 @@ class _NeusHubTextIconFieldWidgetState
         } else {
           return null;
         }
-      default:
-        return null;
+      case NeusHubTextIconFieldType.name:
+        if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+          return Column(
+            children: [
+              Text(
+                'Please enter a valid name',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+              SizedBox(height: 10),
+            ],
+          );
+        } else {
+          return null;
+        }
     }
   }
 
@@ -661,14 +660,17 @@ class _NeusHubTextIconFieldWidgetState
                       ),
                   }),
               child: TextFormField(
-                controller: _textEditingController,
+                controller: widget.contrroller,
+                obscureText: switch (widget.fieldType) {
+                  NeusHubTextIconFieldType.password ||
+                  NeusHubTextIconFieldType.confirmPassword =>
+                    hide,
+                  _ => false,
+                },
                 onChanged: (value) {
                   setState(() {
                     error = regxNeusHubTextIconField(widget.fieldType, value);
                   });
-                  if (widget.onChanged != null) {
-                    widget.onChanged!(value);
-                  }
                 },
                 scrollPadding: EdgeInsets.zero,
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
@@ -684,9 +686,24 @@ class _NeusHubTextIconFieldWidgetState
                   hintStyle: TextStyle(
                     color: Theme.of(context).colorScheme.secondary,
                   ),
-                  suffix: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Icon(suffixNeusHubTextIconField(widget.fieldType)),
+                  suffix: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        hide = !hide;
+                      });
+                    },
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          hide = !hide;
+                        });
+                      },
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child:
+                            Icon(suffixNeusHubTextIconField(widget.fieldType)),
+                      ),
+                    ),
                   ),
                 ),
               ),
