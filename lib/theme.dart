@@ -9,7 +9,7 @@ abstract final class NeusHubColors {
       blackLight = Color(0xFFb3b3b3).withAlpha(128),
       blackDark = Color(0xFFE5E5E5),
       transparent = Colors.transparent,
-      error = Color(0xFFff8080);
+      error = Color(0xFFFF0000);
 }
 
 class NeusHubAppSize {
@@ -52,6 +52,17 @@ ThemeData theme = ThemeData(
       overlayColor: WidgetStatePropertyAll(NeusHubColors.transparent),
       minimumSize: WidgetStatePropertyAll(Size.zero),
     ),
+  ),
+  checkboxTheme: CheckboxThemeData(
+    overlayColor: WidgetStatePropertyAll(NeusHubColors.transparent),
+    side: BorderSide.none,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+      side: BorderSide.none,
+    ),
+    checkColor: WidgetStatePropertyAll(NeusHubColors.grey),
+    fillColor: WidgetStatePropertyAll(NeusHubColors.transparent),
+    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
   ),
   primaryColor: NeusHubColors.black,
   colorScheme: ColorScheme(

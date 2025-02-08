@@ -11,7 +11,7 @@ import '../widgets.dart';
 class NeusHubSignDialog extends Dialog {
   const NeusHubSignDialog({super.key});
 
-  NeusHubSignType signType(NeusHubSignState state) {
+  NeusHubSignType signType(NeusHubSignPageState state) {
     if (state is NeusHubSignPageChangedState) {
       return state.signType;
     } else {
@@ -23,9 +23,9 @@ class NeusHubSignDialog extends Dialog {
   Widget build(BuildContext context) {
     return Dialog.fullscreen(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      child: BlocProvider<NeusHubSignBloc>(
-        create: (context) => NeusHubSignBloc(),
-        child: BlocBuilder<NeusHubSignBloc, NeusHubSignState>(
+      child: BlocProvider<NeusHubSignPageBloc>(
+        create: (context) => NeusHubSignPageBloc(),
+        child: BlocBuilder<NeusHubSignPageBloc, NeusHubSignPageState>(
           builder: (context, state) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,7 +66,8 @@ class NeusHubSignDialog extends Dialog {
                                 activated: true,
                                 only: NeusHubTextIconOnly.textOnly,
                                 onPressed: () {
-                                  BlocProvider.of<NeusHubSignBloc>(context).add(
+                                  BlocProvider.of<NeusHubSignPageBloc>(context)
+                                      .add(
                                     NeusHubSignChangePageEvent(
                                       NeusHubSignType.signIn,
                                     ),
@@ -90,7 +91,8 @@ class NeusHubSignDialog extends Dialog {
                                 activated: true,
                                 only: NeusHubTextIconOnly.textOnly,
                                 onPressed: () {
-                                  BlocProvider.of<NeusHubSignBloc>(context).add(
+                                  BlocProvider.of<NeusHubSignPageBloc>(context)
+                                      .add(
                                     NeusHubSignChangePageEvent(
                                       NeusHubSignType.signUp,
                                     ),
@@ -111,7 +113,10 @@ class NeusHubSignDialog extends Dialog {
                         : MainAxisAlignment.spaceAround,
                     children: [
                       SizedBox(
-                        width: 325,
+                        width: (MediaQuery.sizeOf(context).width <
+                                mobileSize.width + 100)
+                            ? MediaQuery.sizeOf(context).width - 40
+                            : 425,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +137,7 @@ class NeusHubSignDialog extends Dialog {
                                 ],
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
-                                  fontSize: 30,
+                                  fontSize: 40,
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
@@ -161,10 +166,19 @@ class NeusHubSignDialog extends Dialog {
                               ),
                             ),
                             SizedBox(height: 10),
-                            switch (signType(state)) {
-                              NeusHubSignType.signUp => NeusHubSignUpPage(),
-                              _ => NeusHubSignInPage(),
-                            },
+                            BlocProvider<NeusHubSignActionBloc>(
+                              create: (context) => NeusHubSignActionBloc(),
+                              child: BlocBuilder<NeusHubSignActionBloc,
+                                  NeusHubSignActionState>(
+                                builder: (context, stateSign) {
+                                  return switch (signType(state)) {
+                                    NeusHubSignType.signUp =>
+                                      NeusHubSignUpPage(state: stateSign),
+                                    _ => NeusHubSignInPage(state: stateSign),
+                                  };
+                                },
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -189,50 +203,183 @@ class NeusHubSignDialog extends Dialog {
   }
 }
 
-class NeusHubSignInPage extends StatelessWidget {
-  const NeusHubSignInPage({super.key});
+class NeusHubSignInPage extends StatefulWidget {
+  const NeusHubSignInPage({
+    super.key,
+    required this.state,
+  });
+
+  final NeusHubSignActionState state;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        NeusHubTextIconField.filled(
-          fieldType: NeusHubTextIconFieldType.email,
-        ),
-        NeusHubTextIconField.filled(
-          fieldType: NeusHubTextIconFieldType.password,
-        ),
-        SizedBox(height: 5),
-        NeusHubTextIconButton.filled(
-          icon: Icons.abc,
-          label: 'Sign in',
-          only: NeusHubTextIconOnly.textOnly,
-          expanded: true,
-          activated: true,
-        ),
-      ],
-    );
-  }
+  State<NeusHubSignInPage> createState() => _NeusHubSignInPageState();
 }
 
-class NeusHubSignUpPage extends StatelessWidget {
-  const NeusHubSignUpPage({super.key});
+class _NeusHubSignInPageState extends State<NeusHubSignInPage> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  bool remember = false;
+
+  bool valid = false;
+
+  void validate(String email, String password) {
+    setState(() {
+      valid = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
+          RegExp(
+            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
+          ).hasMatch(password);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: formKey,
       child: Column(
         children: [
           NeusHubTextIconField.filled(
+            formKey: formKey,
+            fieldType: NeusHubTextIconFieldType.email,
+            onChanged: (p0) {
+              BlocProvider.of<NeusHubSignActionBloc>(context).add(
+                NeusHubSignInActionEvent(
+                  email: p0,
+                  password: (widget.state is NeusHubSignActionChangedState)
+                      ? (widget.state as NeusHubSignActionChangedState).password
+                      : null,
+                ),
+              );
+            },
+          ),
+          NeusHubTextIconField.filled(
+            formKey: formKey,
+            fieldType: NeusHubTextIconFieldType.password,
+            onChanged: (p0) {
+              BlocProvider.of<NeusHubSignActionBloc>(context).add(
+                NeusHubSignInActionEvent(
+                  password: p0,
+                  email: (widget.state is NeusHubSignActionChangedState)
+                      ? (widget.state as NeusHubSignActionChangedState).password
+                      : null,
+                ),
+              );
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        height: 20,
+                        width: 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.secondary,
+                            strokeAlign: BorderSide.strokeAlignOutside,
+                          ),
+                        ),
+                      ),
+                      Checkbox(
+                        value: remember,
+                        activeColor: NeusHubColors.transparent,
+                        onChanged: (value) {
+                          setState(() {
+                            remember = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  Text(
+                    'Remember me',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ],
+              ),
+              NeusHubTextIconButton(
+                icon: Icons.abc,
+                label: 'Forgot Password?',
+                only: NeusHubTextIconOnly.textOnly,
+                textDecoration: TextDecoration.underline,
+              ),
+            ],
+          ),
+          SizedBox(height: 5),
+          NeusHubTextIconButton.filled(
+            icon: Icons.abc,
+            label: 'Sign in',
+            only: NeusHubTextIconOnly.textOnly,
+            expanded: true,
+            activated: true,
+            onPressed: () {
+              if (widget.state is NeusHubSignActionChangedState) {
+                validate(
+                  (widget.state as NeusHubSignActionChangedState).email ?? '',
+                  (widget.state as NeusHubSignActionChangedState).password ??
+                      '',
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class NeusHubSignUpPage extends StatefulWidget {
+  NeusHubSignUpPage({
+    super.key,
+    required this.state,
+  });
+
+  final NeusHubSignActionState state;
+
+  @override
+  State<NeusHubSignUpPage> createState() => _NeusHubSignUpPageState();
+}
+
+class _NeusHubSignUpPageState extends State<NeusHubSignUpPage> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  bool validate(String email, String password) {
+    if (RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
+        RegExp(
+          r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
+        ).hasMatch(password)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          NeusHubTextIconField.filled(
+            formKey: formKey,
             fieldType: NeusHubTextIconFieldType.name,
           ),
           NeusHubTextIconField.filled(
+            formKey: formKey,
             fieldType: NeusHubTextIconFieldType.email,
           ),
           NeusHubTextIconField.filled(
+            formKey: formKey,
             fieldType: NeusHubTextIconFieldType.password,
           ),
           NeusHubTextIconField.filled(
+            formKey: formKey,
             fieldType: NeusHubTextIconFieldType.confirmPassword,
           ),
           SizedBox(height: 5),
@@ -242,6 +389,9 @@ class NeusHubSignUpPage extends StatelessWidget {
             only: NeusHubTextIconOnly.textOnly,
             expanded: true,
             activated: true,
+            onPressed: () {
+              formKey.currentState?.validate();
+            },
           ),
         ],
       ),

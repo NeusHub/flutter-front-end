@@ -27,7 +27,7 @@ Map<String, Widget> pages = {
   ),
 };
 
-final NeusHubNodeAPI nodeAPI = NeusHubNodeAPI(
+NeusHubNodeAPI nodeAPI = NeusHubNodeAPI(
   '127.0.0.1',
   secured: false,
 );
@@ -36,6 +36,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SharedPreferences user = await SharedPreferences.getInstance();
+
+  nodeAPI = NeusHubNodeAPI(
+    nodeAPI.host,
+    port: nodeAPI.port,
+    secured: nodeAPI.secured,
+    preferences: user,
+  );
+
+  await nodeAPI.signIn('jo000@gmail.com', 'test200');
+
+  print([user.getString('email'), user.getString('token')]);
 
   runApp(NeusHubApp(
     nodeAPI: nodeAPI,
@@ -90,29 +101,43 @@ class _NeusHubAppState extends State<NeusHubApp> {
           body: FutureBuilder<int>(
             future: widget.nodeAPI.connection(),
             builder: (context, builder) {
-              if (builder.connectionState == ConnectionState.done &&
-                  !builder.hasError) {
-                return SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: pages.values.toList(),
-                        ),
+              return SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: pages.values.toList(),
                       ),
-                      NeusHubFooter(tabs: pages.keys.skip(1)),
-                    ],
-                  ),
-                );
-              } else {
-                return NeusHubOfflinePage(
-                  onPressed: () {
-                    setState(() {});
-                  },
-                );
-              }
+                    ),
+                    NeusHubFooter(tabs: pages.keys.skip(1)),
+                  ],
+                ),
+              );
+              // if (builder.connectionState == ConnectionState.done &&
+              //     !builder.hasError) {
+              //   return SingleChildScrollView(
+              //     controller: _scrollController,
+              //     child: Column(
+              //       children: [
+              //         Padding(
+              //           padding: EdgeInsets.symmetric(horizontal: 20),
+              //           child: Column(
+              //             children: pages.values.toList(),
+              //           ),
+              //         ),
+              //         NeusHubFooter(tabs: pages.keys.skip(1)),
+              //       ],
+              //     ),
+              //   );
+              // } else {
+              //   return NeusHubOfflinePage(
+              //     onPressed: () {
+              //       setState(() {});
+              //     },
+              //   );
+              // }
             },
           ),
         ),
