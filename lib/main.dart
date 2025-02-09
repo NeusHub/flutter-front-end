@@ -47,11 +47,8 @@ void main() async {
     preferences: user,
   );
 
-  await nodeAPI.signIn('jo000@gmail.com', 'test200');
-
-  print([user.getString('email'), user.getString('token')]);
-
   runApp(NeusHubApp(
+    key: rootKey,
     nodeAPI: nodeAPI,
   ));
 }

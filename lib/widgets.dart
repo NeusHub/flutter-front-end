@@ -556,11 +556,30 @@ class _NeusHubTextIconFieldWidgetState
     };
   }
 
-  IconData? suffixNeusHubTextIconField(NeusHubTextIconFieldType fieldType) {
+  Widget? suffixNeusHubTextIconField(NeusHubTextIconFieldType fieldType) {
     return switch (fieldType) {
       NeusHubTextIconFieldType.password ||
       NeusHubTextIconFieldType.confirmPassword =>
-        NeusHubIcons.eye,
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              hide = !hide;
+            });
+          },
+          child: ElevatedButton(
+            onPressed: () {
+              setState(() {
+                hide = !hide;
+              });
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Icon(
+                NeusHubIcons.eye,
+              ),
+            ),
+          ),
+        ),
       _ => null,
     };
   }
@@ -686,25 +705,7 @@ class _NeusHubTextIconFieldWidgetState
                   hintStyle: TextStyle(
                     color: Theme.of(context).colorScheme.secondary,
                   ),
-                  suffix: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        hide = !hide;
-                      });
-                    },
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          hide = !hide;
-                        });
-                      },
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child:
-                            Icon(suffixNeusHubTextIconField(widget.fieldType)),
-                      ),
-                    ),
-                  ),
+                  suffix: suffixNeusHubTextIconField(widget.fieldType),
                 ),
               ),
             ),

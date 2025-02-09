@@ -154,22 +154,33 @@ class NeusHubSignButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NeusHubTextIconButton.filled(
-      icon: Icons.abc,
-      label: 'Grow your audience today',
-      only: NeusHubTextIconOnly.textOnly,
-      expanded: expanded,
-      onPressed: () async {
-        if (await nodeAPI.connection() == 200) {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return NeusHubSignDialog();
-            },
-          );
-        }
-      },
-    );
+    return FutureBuilder(
+        future: nodeAPI.token(
+          nodeAPI.preferences?.getString('email') ?? '',
+          nodeAPI.preferences?.getString('token') ?? '',
+        ),
+        builder: (context, snapshot) {
+          if (snapshot.data.toString() == '[false]') {
+            return NeusHubTextIconButton.filled(
+              icon: Icons.abc,
+              label: 'Grow your audience today',
+              only: NeusHubTextIconOnly.textOnly,
+              expanded: expanded,
+              onPressed: () async {
+                if (await nodeAPI.connection() == 200) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return NeusHubSignDialog();
+                    },
+                  );
+                }
+              },
+            );
+          } else {
+            return Text(nodeAPI.preferences?.getString('email') ?? '');
+          }
+        });
   }
 }
 

@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './main.dart';
-
 class NeusHubNodeAPI {
   final String host;
   final int port;

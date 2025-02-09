@@ -113,65 +113,71 @@ class NeusHubSignDialog extends Dialog {
                         ? MainAxisAlignment.center
                         : MainAxisAlignment.spaceAround,
                     children: [
-                      SizedBox(
+                      Container(
                         width: (MediaQuery.sizeOf(context).width <
                                 mobileSize.width + 100)
                             ? MediaQuery.sizeOf(context).width - 40
                             : 425,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(text: 'Welcome to '),
-                                  TextSpan(
-                                    text: 'Neus',
-                                    style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary,
+                        height: 500,
+                        alignment: Alignment.center,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(text: 'Welcome to '),
+                                    TextSpan(
+                                      text: 'Neus',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary,
+                                      ),
                                     ),
+                                    TextSpan(text: 'Hub'),
+                                  ],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 40,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
-                                  TextSpan(text: 'Hub'),
-                                ],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 40,
-                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(text: 'With '),
-                                  TextSpan(
-                                    text: 'NausHub',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(text: 'With '),
+                                    TextSpan(
+                                      text: 'NausHub',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
                                     ),
+                                    TextSpan(
+                                      text:
+                                          ' dashboard you can track analytics of how your newsletter doing in our platform.',
+                                    ),
+                                  ],
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
                                   ),
-                                  TextSpan(
-                                    text:
-                                        ' dashboard you can track analytics of how your newsletter doing in our platform.',
-                                  ),
-                                ],
-                                style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            switch (signType(state)) {
-                              NeusHubSignType.signUp => NeusHubSignUpPage(),
-                              _ => NeusHubSignInPage(),
-                            },
-                          ],
+                              SizedBox(height: 10),
+                              switch (signType(state)) {
+                                NeusHubSignType.signUp => NeusHubSignUpPage(),
+                                _ => NeusHubSignInPage(),
+                              },
+                            ],
+                          ),
                         ),
                       ),
                       Visibility(
@@ -223,30 +229,41 @@ class _NeusHubSignInPageState extends State<NeusHubSignInPage> {
   }
 
   bool remember = false, valid = false;
+  String response = '';
 
-  void signValidate(String email, String password) {
-    setState(() {
-      if (RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
-          RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
-              .hasMatch(password)) {
+  void signValidate(
+    String email,
+    String password, [
+    bool remember = false,
+  ]) async {
+    if (RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
+        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+            .hasMatch(password)) {
+      dynamic r = await nodeAPI.signIn(
+        email,
+        password,
+        '',
+        remember,
+      );
+      setState(() {
         valid = true;
-      } else {
+        response = (r == 'password not match' || r == 'user not found')
+            ? r as String
+            : '';
+        if (response == '') {
+          rootKey.currentState?.refresh();
+          Navigator.of(context).pop();
+        }
+      });
+    } else {
+      setState(() {
         valid = false;
-      }
-    });
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (valid) {
-      nodeAPI.signIn(
-        emailController.text,
-        passworrdContoller.text,
-        '',
-        remember,
-      );
-    }
-
     return Form(
       key: formKey,
       child: Column(
@@ -315,8 +332,23 @@ class _NeusHubSignInPageState extends State<NeusHubSignInPage> {
             expanded: true,
             activated: true,
             onPressed: () {
-              signValidate(emailController.text, passworrdContoller.text);
+              signValidate(
+                emailController.text,
+                passworrdContoller.text,
+                remember,
+              );
             },
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            child: (response == '')
+                ? null
+                : Text(
+                    response,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
           ),
         ],
       ),
@@ -359,33 +391,41 @@ class _NeusHubSignUpPageState extends State<NeusHubSignUpPage> {
   }
 
   bool valid = false;
+  String response = '';
 
   void signValidate(
     String email,
     String password,
     String confirmPassword,
     String name,
-  ) {
-    setState(() {
-      if (RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
-          RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
-              .hasMatch(password) &&
-          RegExp(r'^[a-zA-Z\s]+$').hasMatch(name) &&
-          password == confirmPassword) {
+  ) async {
+    if (RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
+        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+            .hasMatch(password) &&
+        RegExp(r'^[a-zA-Z\s]+$').hasMatch(name) &&
+        password == confirmPassword) {
+      dynamic r = await nodeAPI.signUp(
+        email,
+        name,
+        password,
+      );
+      setState(() {
         valid = true;
-      } else {
+        response = (r.toString() == 'true') ? '' : 'user exist';
+        if (response == '') {
+          rootKey.currentState?.refresh();
+          Navigator.of(context).pop();
+        }
+      });
+    } else {
+      setState(() {
         valid = false;
-      }
-    });
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (valid) {
-      nodeAPI.signUp(
-          emailController.text, nameController.text, passworrdContoller.text);
-    }
-
     return Form(
       key: formKey,
       child: Column(
@@ -425,6 +465,17 @@ class _NeusHubSignUpPageState extends State<NeusHubSignUpPage> {
                 nameController.text,
               );
             },
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            child: (response == '')
+                ? null
+                : Text(
+                    response,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
           ),
         ],
       ),
