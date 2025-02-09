@@ -53,6 +53,24 @@ ThemeData theme = ThemeData(
       minimumSize: WidgetStatePropertyAll(Size.zero),
     ),
   ),
+  popupMenuTheme: PopupMenuThemeData(
+    position: PopupMenuPosition.under,
+    color: NeusHubColors.white,
+    shadowColor: NeusHubColors.transparent,
+    surfaceTintColor: NeusHubColors.transparent,
+    menuPadding: EdgeInsets.symmetric(vertical: 10),
+    shape: BorderDirectional(
+      bottom: BorderSide(
+        color: NeusHubColors.blackLight,
+      ),
+      start: BorderSide(
+        color: NeusHubColors.blackLight,
+      ),
+      end: BorderSide(
+        color: NeusHubColors.blackLight,
+      ),
+    ),
+  ),
   checkboxTheme: CheckboxThemeData(
     overlayColor: WidgetStatePropertyAll(NeusHubColors.transparent),
     side: BorderSide.none,

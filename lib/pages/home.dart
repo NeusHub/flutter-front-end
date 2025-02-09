@@ -72,6 +72,7 @@ class NeusHubHomePage extends StatelessWidget {
                           ),
                           SizedBox(height: 20),
                           NeusHubSignButton(
+                            visible: false,
                             expanded: (MediaQuery.sizeOf(context).width <
                                 mobileSize.width),
                           ),
@@ -86,7 +87,7 @@ class NeusHubHomePage extends StatelessWidget {
                             activated: true,
                           ),
                           SizedBox(width: 20),
-                          NeusHubSignButton(),
+                          NeusHubSignButton(visible: false),
                         ],
                       ),
               ],

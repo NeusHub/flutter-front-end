@@ -148,39 +148,112 @@ class NeusHubSignButton extends StatelessWidget {
   const NeusHubSignButton({
     super.key,
     this.expanded = false,
+    this.visible = true,
   });
 
-  final bool expanded;
+  final bool expanded, visible;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: nodeAPI.token(
-          nodeAPI.preferences?.getString('email') ?? '',
-          nodeAPI.preferences?.getString('token') ?? '',
-        ),
-        builder: (context, snapshot) {
-          if (snapshot.data.toString() == '[false]') {
-            return NeusHubTextIconButton.filled(
-              icon: Icons.abc,
-              label: 'Grow your audience today',
-              only: NeusHubTextIconOnly.textOnly,
-              expanded: expanded,
-              onPressed: () async {
-                if (await nodeAPI.connection() == 200) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return NeusHubSignDialog();
-                    },
-                  );
-                }
-              },
+      future: nodeAPI.token(
+        nodeAPI.preferences?.getString('email') ?? '',
+        nodeAPI.preferences?.getString('token') ?? '',
+      ),
+      builder: (context, snapshot) {
+        if (snapshot.data.toString() == '[false]' || snapshot.data == null) {
+          return NeusHubTextIconButton.filled(
+            icon: Icons.abc,
+            label: 'Grow your audience today',
+            only: NeusHubTextIconOnly.textOnly,
+            expanded: expanded,
+            onPressed: () async {
+              if (await nodeAPI.connection() == 200) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return NeusHubSignDialog();
+                  },
+                );
+              }
+            },
+          );
+        } else {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Visibility(
+              visible: visible,
+              child: TextButton(
+                onPressed: () {},
+                child: PopupMenuButton(
+                  tooltip: 'log out',
+                  offset: Offset(0, 13),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      padding: EdgeInsets.zero,
+                      height: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: NeusHubTextIconButton(
+                            icon: Icons.abc,
+                            label: 'Log out',
+                            only: NeusHubTextIconOnly.textOnly,
+                            onPressed: () async {
+                              await nodeAPI.preferences?.clear();
+                              rootKey.currentState?.refresh();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                  child: Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        width: 25,
+                        height: 25,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Text(
+                          snapshot.data![1]['full_name']
+                              .toString()[0]
+                              .toUpperCase(),
+                          style: TextStyle(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        snapshot.data![1]['full_name']
+                            .toString()
+                            .split(' ')
+                            .map(
+                              (e) => e[0].toUpperCase() + e.substring(1),
+                            )
+                            .first,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             );
           } else {
-            return Text(nodeAPI.preferences?.getString('email') ?? '');
+            return SizedBox();
           }
-        });
+        }
+      },
+    );
   }
 }
 

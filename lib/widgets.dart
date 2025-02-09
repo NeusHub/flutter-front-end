@@ -560,13 +560,13 @@ class _NeusHubTextIconFieldWidgetState
     return switch (fieldType) {
       NeusHubTextIconFieldType.password ||
       NeusHubTextIconFieldType.confirmPassword =>
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              hide = !hide;
-            });
-          },
-          child: ElevatedButton(
+        SizedBox(
+          width: 10,
+          height: 10,
+          child: TextButton(
+            style: ButtonStyle(
+              padding: WidgetStatePropertyAll(EdgeInsets.zero),
+            ),
             onPressed: () {
               setState(() {
                 hide = !hide;

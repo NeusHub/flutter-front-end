@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:neushub/pages/app_bar.dart';
@@ -31,14 +32,23 @@ final GlobalKey<_NeusHubAppState> rootKey =
     GlobalKey<_NeusHubAppState>(debugLabel: 'root');
 
 NeusHubNodeAPI nodeAPI = NeusHubNodeAPI(
-  '127.0.0.1',
-  secured: false,
+  'aaf9-156-195-44-115.ngrok-free.app',
+  secured: true,
 );
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SharedPreferences user = await SharedPreferences.getInstance();
+
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: NeusHubColors.white,
+      systemNavigationBarColor: NeusHubColors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+    ),
+  );
 
   nodeAPI = NeusHubNodeAPI(
     nodeAPI.host,
@@ -104,7 +114,7 @@ class _NeusHubAppState extends State<NeusHubApp> {
           ),
           body: FutureBuilder<int>(
             future: widget.nodeAPI.connection(),
-            builder: (context, builder) {
+            builder: (context, snapshot) {
               // return SingleChildScrollView(
               //   controller: _scrollController,
               //   child: Column(
@@ -119,17 +129,31 @@ class _NeusHubAppState extends State<NeusHubApp> {
               //     ],
               //   ),
               // );
-              if (builder.connectionState == ConnectionState.done &&
-                  !builder.hasError) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  !snapshot.hasError) {
                 return SingleChildScrollView(
                   controller: _scrollController,
                   child: Column(
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: pages.values.toList(),
-                        ),
+                        child: FutureBuilder(
+                            future: nodeAPI.token(
+                              nodeAPI.preferences?.getString('email') ?? '',
+                              nodeAPI.preferences?.getString('token') ?? '',
+                            ),
+                            builder: (context, snapshot) {
+                              if (snapshot.data != null &&
+                                  snapshot.data.toString() != '[false]') {
+                                return Column(
+                                  children: pages.values.toList().sublist(1),
+                                );
+                              } else {
+                                return Column(
+                                  children: pages.values.toList(),
+                                );
+                              }
+                            }),
                       ),
                       NeusHubFooter(tabs: pages.keys.skip(1)),
                     ],
