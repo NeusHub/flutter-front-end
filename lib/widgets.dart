@@ -272,13 +272,10 @@ class _NeusHubTextIconButtonWidgetState
       child: MouseRegion(
         cursor: widget.cursor ?? SystemMouseCursors.click,
         child: GestureDetector(
-          onPanStart: (details) {
+          onTapDown: (details) {
             onHover(true);
-            if (widget.onPressed != null) {
-              widget.onPressed!();
-            }
           },
-          onPanCancel: () {
+          onTapCancel: () {
             onHover(false);
           },
           child: TextButton(
@@ -561,8 +558,8 @@ class _NeusHubTextIconFieldWidgetState
       NeusHubTextIconFieldType.password ||
       NeusHubTextIconFieldType.confirmPassword =>
         SizedBox(
-          width: 10,
-          height: 10,
+          width: 16,
+          height: 16,
           child: TextButton(
             style: ButtonStyle(
               padding: WidgetStatePropertyAll(EdgeInsets.zero),
@@ -610,18 +607,22 @@ class _NeusHubTextIconFieldWidgetState
         ).hasMatch(value)) {
           return Column(
             children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(text: 'Password must contain:\n'),
-                    TextSpan(text: '- At least 8 characters\n'),
-                    TextSpan(text: '- At least one uppercase letter\n'),
-                    TextSpan(text: '- At least one lowercase letter\n'),
-                    TextSpan(text: '- At least one digit\n'),
-                    TextSpan(
-                        text: '- At least one special character (!@#\$&*~)'),
-                  ],
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(text: 'Password must contain:\n'),
+                      TextSpan(text: '- At least 8 characters\n'),
+                      TextSpan(text: '- At least one uppercase letter\n'),
+                      TextSpan(text: '- At least one lowercase letter\n'),
+                      TextSpan(text: '- At least one digit\n'),
+                      TextSpan(
+                          text: '- At least one special character (!@#\$&*~)'),
+                    ],
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
                 ),
               ),
               SizedBox(height: 10),

@@ -10,13 +10,18 @@ import '../widgets.dart';
 import '../main.dart';
 
 class NeusHubSignDialog extends Dialog {
-  const NeusHubSignDialog({super.key});
+  const NeusHubSignDialog({
+    super.key,
+    this.signTypeDialog = NeusHubSignType.signIn,
+  });
+
+  final NeusHubSignType signTypeDialog;
 
   NeusHubSignType signType(NeusHubSignPageState state) {
     if (state is NeusHubSignPageChangedState) {
       return state.signType;
     } else {
-      return NeusHubSignType.signIn;
+      return signTypeDialog;
     }
   }
 
@@ -125,49 +130,56 @@ class NeusHubSignDialog extends Dialog {
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(text: 'Welcome to '),
-                                    TextSpan(
-                                      text: 'Neus',
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary,
+                              Directionality(
+                                textDirection: TextDirection.ltr,
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(text: 'Welcome to '),
+                                      TextSpan(
+                                        text: 'Neus',
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                        ),
                                       ),
+                                      TextSpan(text: 'Hub'),
+                                    ],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 40,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
-                                    TextSpan(text: 'Hub'),
-                                  ],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 40,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ),
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(text: 'With '),
-                                    TextSpan(
-                                      text: 'NausHub',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                              Directionality(
+                                textDirection: TextDirection.ltr,
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(text: 'With '),
+                                      TextSpan(
+                                        text: 'NausHub',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
                                       ),
+                                      TextSpan(
+                                        text:
+                                            ' dashboard you can track analytics of how your newsletter doing in our platform.',
+                                      ),
+                                    ],
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                     ),
-                                    TextSpan(
-                                      text:
-                                          ' dashboard you can track analytics of how your newsletter doing in our platform.',
-                                    ),
-                                  ],
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
                                   ),
                                 ),
                               ),
@@ -420,6 +432,9 @@ class _NeusHubSignUpPageState extends State<NeusHubSignUpPage> {
     } else {
       setState(() {
         valid = false;
+        if (password != confirmPassword) {
+          response = 'passwords not match';
+        }
       });
     }
   }

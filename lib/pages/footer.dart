@@ -142,10 +142,15 @@ class NeusHubFooterList extends StatelessWidget {
   Widget build(BuildContext context) {
     return (mobileFlag)
         ? ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 280),
+            constraints: BoxConstraints(maxHeight: 500),
             child: ListView.separated(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) => children[index],
-              separatorBuilder: (context, index) => Divider(height: 20),
+              separatorBuilder: (context, index) => Divider(
+                height: 20,
+                color: NeusHubColors.transparent,
+              ),
               itemCount: children.length,
             ),
           )

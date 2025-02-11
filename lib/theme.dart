@@ -9,7 +9,8 @@ abstract final class NeusHubColors {
       blackLight = Color(0xFFb3b3b3).withAlpha(128),
       blackDark = Color(0xFFE5E5E5),
       transparent = Colors.transparent,
-      error = Color(0xFFFF0000);
+      error = Color(0xFFFF0000),
+      dialog = Color(0xFFB3B3B3);
 }
 
 class NeusHubAppSize {
@@ -93,6 +94,8 @@ ThemeData theme = ThemeData(
     onError: NeusHubColors.transparent,
     surface: NeusHubColors.white,
     onSurface: NeusHubColors.blackDark,
+    surfaceContainer: NeusHubColors.dialog,
+    primaryContainer: NeusHubColors.transparent,
   ),
   dialogBackgroundColor: NeusHubColors.white,
   dialogTheme: DialogTheme(

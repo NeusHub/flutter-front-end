@@ -5,59 +5,65 @@ class NeusHubAboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(text: 'About '),
-              TextSpan(
-                text: 'Neus',
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(text: 'About '),
+                  TextSpan(
+                    text: 'Neus',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  TextSpan(text: 'Hub'),
+                ],
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 44,
                 ),
               ),
-              TextSpan(text: 'Hub'),
-            ],
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontSize: 44,
             ),
           ),
-        ),
-        SizedBox(height: 15),
-        ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: MediaQuery.sizeOf(context).width - 40,
-            maxHeight: 1500,
+          SizedBox(height: 15),
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.sizeOf(context).width,
+              maxHeight: 1500,
+            ),
+            child: Wrap(
+              spacing: 15,
+              runSpacing: 15,
+              children: [
+                NeusHubAboutChildren(
+                  title: 'Newsletter is like magic',
+                  image: Image.asset('assets/images/about_magic.png'),
+                  description:
+                      'It takes you to what is beyond your knowledge with few sentence that have a lot of power to change your outer world, We founded NuesHub to teach you magic.',
+                ),
+                NeusHubAboutChildren(
+                  title: 'A bridge for Newsletter owners and fans',
+                  image: Image.asset('assets/images/about_owner.png'),
+                  description:
+                      'NuesHub is a platform for newsletter fans and owners, It connect great newsletters that has valuable content to it\'s targeted audience.',
+                ),
+                NeusHubAboutChildren(
+                  title:
+                      'Finding a newsletter is like finding magic crystal ball',
+                  image: Image.asset('assets/images/about_finder.png'),
+                  description:
+                      'It\'s hard to find the right newsletter with useful content to your needs it sounds like looking for a mgic crystal ball that\'s why NuesHub got your back.',
+                ),
+              ],
+            ),
           ),
-          child: Wrap(
-            spacing: 15,
-            runSpacing: 15,
-            children: [
-              NeusHubAboutChildren(
-                title: 'Newsletter is like magic',
-                image: Image.asset('assets/images/about_magic.png'),
-                description:
-                    'It takes you to what is beyond your knowledge with few sentence that have a lot of power to change your outer world, We founded NuesHub to teach you magic.',
-              ),
-              NeusHubAboutChildren(
-                title: 'A bridge for Newsletter owners and fans',
-                image: Image.asset('assets/images/about_owner.png'),
-                description:
-                    'NuesHub is a platform for newsletter fans and owners, It connect great newsletters that has valuable content to it\'s targeted audience.',
-              ),
-              NeusHubAboutChildren(
-                title:
-                    'Finding a newsletter is like finding magic crystal ball',
-                image: Image.asset('assets/images/about_finder.png'),
-                description:
-                    'It\'s hard to find the right newsletter with useful content to your needs it sounds like looking for a mgic crystal ball that\'s why NuesHub got your back.',
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

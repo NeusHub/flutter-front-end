@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:neushub/pages/sign.dart';
+import 'package:neushub/bloc/sign_bloc.dart';
 
 import '../theme.dart';
 import '../inheritance.dart';
@@ -9,14 +10,14 @@ import '../widgets.dart';
 import '../main.dart';
 
 class NeusHubAppBarMenu {
-  final Key? appBarey;
+  final GlobalKey? appBarKey;
   final BuildContext context;
   final Iterable<String> tabs;
   final bool menuFlag;
   final ScrollController? scrollController;
 
   const NeusHubAppBarMenu({
-    this.appBarey,
+    this.appBarKey,
     required this.context,
     required this.tabs,
     this.scrollController,
@@ -82,6 +83,7 @@ class NeusHubAppBarMenu {
                                             tab,
                                             menuFlag: menuFlag,
                                             scrollController: scrollController,
+                                            appBarKey: appBarKey,
                                           ),
                                         ),
                                       )
@@ -104,6 +106,7 @@ class NeusHubAppBarMenu {
               ...tabs.map<NeusHubAppBarTab>((tab) => NeusHubAppBarTab(
                     tab,
                     scrollController: scrollController,
+                    appBarKey: appBarKey,
                   )),
               SizedBox(width: 10),
             ],
@@ -137,7 +140,7 @@ class NeusHubAppBar extends PreferredSize {
         children: [
           NeusHubAppBarTitle(scrollController: scrollController),
           Expanded(child: child),
-          NeusHubSignButton(),
+          NeusHubSignButton(label: 'Grow your audience today'),
         ],
       ),
     );
@@ -147,32 +150,41 @@ class NeusHubAppBar extends PreferredSize {
 class NeusHubSignButton extends StatelessWidget {
   const NeusHubSignButton({
     super.key,
+    this.label = '',
     this.expanded = false,
     this.visible = true,
+    this.fromFinder = false,
+    this.activated = false,
+    this.signTypeDialog = NeusHubSignType.signIn,
   });
 
-  final bool expanded, visible;
+  final String label;
+  final bool expanded, visible, fromFinder, activated;
+  final NeusHubSignType signTypeDialog;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: nodeAPI.token(
-        nodeAPI.preferences?.getString('email') ?? '',
-        nodeAPI.preferences?.getString('token') ?? '',
-      ),
+      future: nodeAPI.token(),
       builder: (context, snapshot) {
         if (snapshot.data.toString() == '[false]' || snapshot.data == null) {
           return NeusHubTextIconButton.filled(
             icon: Icons.abc,
-            label: 'Grow your audience today',
+            label: label,
             only: NeusHubTextIconOnly.textOnly,
             expanded: expanded,
+            activated: activated,
             onPressed: () async {
               if (await nodeAPI.connection() == 200) {
+                if (fromFinder == true) {
+                  Navigator.of(context).pop();
+                }
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return NeusHubSignDialog();
+                    return NeusHubSignDialog(
+                      signTypeDialog: signTypeDialog,
+                    );
                   },
                 );
               }
@@ -278,7 +290,19 @@ class NeusHubAppBarTitle extends StatelessWidget {
       ),
       builder: (context, child) {
         return GestureDetector(
-          child: ElevatedButton(
+          onTapDown: (details) {
+            Provider.of<NeusHubHover<Color>>(
+              context,
+              listen: false,
+            ).hover(true);
+          },
+          onTapCancel: () {
+            Provider.of<NeusHubHover<Color>>(
+              context,
+              listen: false,
+            ).hover(false);
+          },
+          child: TextButton(
             onPressed: () {
               try {
                 scrollController?.animateTo(
@@ -304,21 +328,24 @@ class NeusHubAppBarTitle extends StatelessWidget {
             },
             child: Consumer<NeusHubHover<Color>>(
               builder: (context, value, child) {
-                return RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'Neus',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                return Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Neus',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
+                        TextSpan(text: 'Hub'),
+                      ],
+                      style: TextStyle(
+                        color: value.flag,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
                       ),
-                      TextSpan(text: 'Hub'),
-                    ],
-                    style: TextStyle(
-                      color: value.flag,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
                     ),
                   ),
                 );
@@ -336,11 +363,13 @@ class NeusHubAppBarTab extends StatelessWidget {
     this.tab, {
     super.key,
     this.scrollController,
+    this.appBarKey,
     this.menuFlag = false,
   });
 
   final String tab;
   final ScrollController? scrollController;
+  final GlobalKey? appBarKey;
   final bool menuFlag;
 
   @override
@@ -353,6 +382,7 @@ class NeusHubAppBarTab extends StatelessWidget {
         only: NeusHubTextIconOnly.textOnly,
         onPressed: () {
           try {
+            double? appBarHeight = appBarKey?.currentContext?.size!.height;
             if (menuFlag) {
               Navigator.of(context).pop();
             }
@@ -362,7 +392,8 @@ class NeusHubAppBarTab extends StatelessWidget {
                       .localToGlobal(Offset.zero)
                       .dy +
                   scrollController!.offset -
-                  60,
+                  appBarHeight! -
+                  17,
               duration: Durations.long2,
               curve: Curves.easeInOut,
             );

@@ -32,7 +32,7 @@ final GlobalKey<_NeusHubAppState> rootKey =
     GlobalKey<_NeusHubAppState>(debugLabel: 'root');
 
 NeusHubNodeAPI nodeAPI = NeusHubNodeAPI(
-  'aaf9-156-195-44-115.ngrok-free.app',
+  '71a8-156-195-149-243.ngrok-free.app',
   secured: true,
 );
 
@@ -57,10 +57,7 @@ void main() async {
     preferences: user,
   );
 
-  runApp(NeusHubApp(
-    key: rootKey,
-    nodeAPI: nodeAPI,
-  ));
+  runApp(NeusHubApp(nodeAPI: nodeAPI));
 }
 
 class NeusHubApp extends StatefulWidget {
@@ -100,10 +97,11 @@ class _NeusHubAppState extends State<NeusHubApp> {
       home: SafeArea(
         child: Scaffold(
           appBar: NeusHubAppBar(
+            key: appBarKey,
             preferredSize: NeusHubAppSize(context).size(),
             scrollController: _scrollController,
             child: NeusHubAppBarMenu(
-              appBarey: appBarKey,
+              appBarKey: appBarKey,
               context: context,
               tabs: pages.keys.skip(1),
               menuFlag: (MediaQuery.sizeOf(context).width < mobileSize.width)
@@ -115,46 +113,25 @@ class _NeusHubAppState extends State<NeusHubApp> {
           body: FutureBuilder<int>(
             future: widget.nodeAPI.connection(),
             builder: (context, snapshot) {
-              // return SingleChildScrollView(
-              //   controller: _scrollController,
-              //   child: Column(
-              //     children: [
-              //       Padding(
-              //         padding: EdgeInsets.symmetric(horizontal: 20),
-              //         child: Column(
-              //           children: pages.values.toList(),
-              //         ),
-              //       ),
-              //       NeusHubFooter(tabs: pages.keys.skip(1)),
-              //     ],
-              //   ),
-              // );
-              if (snapshot.connectionState == ConnectionState.done &&
-                  !snapshot.hasError) {
+              if (!snapshot.hasError) {
                 return SingleChildScrollView(
                   controller: _scrollController,
                   child: Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: FutureBuilder(
-                            future: nodeAPI.token(
-                              nodeAPI.preferences?.getString('email') ?? '',
-                              nodeAPI.preferences?.getString('token') ?? '',
-                            ),
-                            builder: (context, snapshot) {
-                              if (snapshot.data != null &&
-                                  snapshot.data.toString() != '[false]') {
-                                return Column(
-                                  children: pages.values.toList().sublist(1),
-                                );
-                              } else {
-                                return Column(
-                                  children: pages.values.toList(),
-                                );
-                              }
-                            }),
-                      ),
+                      FutureBuilder(
+                          future: nodeAPI.token(),
+                          builder: (context, snapshot) {
+                            if (snapshot.data != null &&
+                                snapshot.data.toString() != '[false]') {
+                              return Column(
+                                children: pages.values.toList().sublist(1),
+                              );
+                            } else {
+                              return Column(
+                                children: pages.values.toList(),
+                              );
+                            }
+                          }),
                       NeusHubFooter(tabs: pages.keys.skip(1)),
                     ],
                   ),

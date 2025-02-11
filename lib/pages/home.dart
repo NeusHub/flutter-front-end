@@ -17,47 +17,49 @@ class NeusHubHomePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: EdgeInsets.only(
-                right: (MediaQuery.sizeOf(context).width < mobileSize.width)
-                    ? 0
-                    : 30),
+            padding: EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
             width: (MediaQuery.sizeOf(context).width < mobileSize.width)
                 ? MediaQuery.sizeOf(context).width - 50
-                : (MediaQuery.sizeOf(context).width - 20) / 2,
+                : (MediaQuery.sizeOf(context).width - 10) / 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'Hundred of newsletter in one place',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          fontSize: 12,
+                Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Hundred of newsletter in one place',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                      TextSpan(text: '\n'),
-                      TextSpan(
-                        text:
-                            'Looking for life changer newsletter to Subscribe?',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 40,
-                          fontWeight: FontWeight.w700,
+                        TextSpan(text: '\n'),
+                        TextSpan(
+                          text:
+                              'Looking for life changer newsletter to Subscribe?',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontSize: 40,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                      TextSpan(text: '\n\n'),
-                      TextSpan(
-                        text:
-                            'Find newsletter with rich content for career advices, Finance, Crypto, Tech, Programming, Designing and even much more.',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 14,
+                        TextSpan(text: '\n\n'),
+                        TextSpan(
+                          text:
+                              'Find newsletter with rich content for career advices, Finance, Crypto, Tech, Programming, Designing and even much more.',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontSize: 14,
+                          ),
                         ),
-                      ),
-                      TextSpan(text: '\n\n'),
-                    ],
+                        TextSpan(text: '\n\n'),
+                      ],
+                    ),
                   ),
                 ),
                 (MediaQuery.sizeOf(context).width < mobileSize.width)
@@ -72,6 +74,7 @@ class NeusHubHomePage extends StatelessWidget {
                           ),
                           SizedBox(height: 20),
                           NeusHubSignButton(
+                            label: 'Grow your audience today',
                             visible: false,
                             expanded: (MediaQuery.sizeOf(context).width <
                                 mobileSize.width),
