@@ -2,11 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'package:neushub/pages/app_bar.dart';
 
+import '../main.dart';
 import '../theme.dart';
 import '../widgets.dart';
 
 class NeusHubHomePage extends StatelessWidget {
-  const NeusHubHomePage({super.key});
+  const NeusHubHomePage({
+    super.key,
+    this.scrollController,
+    this.appBarKey,
+  });
+
+  final ScrollController? scrollController;
+  final GlobalKey? appBarKey;
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +96,28 @@ class NeusHubHomePage extends StatelessWidget {
                             label: 'Find Newsletter',
                             only: NeusHubTextIconOnly.textOnly,
                             activated: true,
+                            onPressed: () {
+                              double? appBarHeight =
+                                  appBarKey?.currentContext?.size!.height;
+                              scrollController?.animateTo(
+                                ((pages['Find Newsletter']?.key as GlobalKey)
+                                            .currentContext
+                                            ?.findRenderObject() as RenderBox)
+                                        .localToGlobal(Offset.zero)
+                                        .dy +
+                                    scrollController!.offset -
+                                    appBarHeight! -
+                                    17,
+                                duration: Durations.long2,
+                                curve: Curves.easeInOut,
+                              );
+                            },
                           ),
                           SizedBox(width: 20),
-                          NeusHubSignButton(visible: false),
+                          NeusHubSignButton(
+                            label: 'Grow your audience today',
+                            visible: false,
+                          ),
                         ],
                       ),
               ],

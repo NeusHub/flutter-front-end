@@ -159,19 +159,6 @@ class NeusHubFindCard extends StatefulWidget {
 }
 
 class _NeusHubFindCardState extends State<NeusHubFindCard> {
-  String subscribeText = 'Subscribe';
-
-  void subscribe() async {
-    bool subscribed =
-        (await nodeAPI.subscribe(widget.post['user_email'])).toString() ==
-            '[false]';
-    if (subscribed) {
-      setState(() {
-        subscribeText = 'Subscribed';
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -262,22 +249,30 @@ class _NeusHubFindCardState extends State<NeusHubFindCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       FutureBuilder(
-                          future: nodeAPI.subscribe(widget.post['user_email']),
+                          future: nodeAPI.subscribed(widget.post['user_email']),
                           builder: (context, snapshot) {
                             return NeusHubTextIconButton.filled(
                               icon: Icons.abc,
                               label: (snapshot.connectionState ==
-                                          ConnectionState.done &&
-                                      !snapshot.hasError &&
-                                      snapshot.data.toString() == '[false]')
-                                  ? 'Subscribe'
-                                  : subscribeText,
+                                      ConnectionState.done)
+                                  ? snapshot.data[0][0]
+                                          .toString()
+                                          .toUpperCase() +
+                                      snapshot.data[0].toString().substring(1)
+                                  : '',
                               only: NeusHubTextIconOnly.textOnly,
                               activated: true,
                               onPressed: () async {
                                 if ((await nodeAPI.token()).toString() !=
                                     '[false]') {
-                                  subscribe();
+                                  if ((await nodeAPI.subscribe(
+                                              widget.post['user_email']))
+                                          .toString() ==
+                                      '[subscribe]') {
+                                    setState(() {});
+                                  }
+                                  print((await nodeAPI
+                                      .subscribe(widget.post['user_email'])));
                                 } else {
                                   showDialog(
                                     context: context,

@@ -216,7 +216,7 @@ class NeusHubSignButton extends StatelessWidget {
                             onPressed: () async {
                               await nodeAPI.preferences?.clear();
                               rootKey.currentState?.refresh();
-                              Navigator.of(context).pop();
+                              // Navigator.of(context).pop();
                             },
                           ),
                         ),

@@ -7,15 +7,22 @@ import 'package:neushub/pages/offline.dart';
 import 'package:neushub/pages/home.dart';
 import 'package:neushub/pages/find_newsletter.dart';
 import 'package:neushub/pages/about_us.dart';
-import 'package:neushub/pages/contact_us.dart';
+// import 'package:neushub/pages/contact_us.dart';
 import 'package:neushub/pages/footer.dart';
 
 import './theme.dart';
 import './nodejsapi.dart';
 
+final GlobalKey<_NeusHubAppState> rootKey =
+    GlobalKey<_NeusHubAppState>(debugLabel: 'root');
+final GlobalKey appBarKey = GlobalKey(debugLabel: 'app bar');
+final ScrollController scrollController = ScrollController();
+
 final Map<String, Widget> pages = {
   'Home': NeusHubHomePage(
     key: GlobalKey(debugLabel: 'Home'),
+    appBarKey: appBarKey,
+    scrollController: scrollController,
   ),
   'Find Newsletter': NeusHubFindPage(
     key: GlobalKey(debugLabel: 'Find Newsletter'),
@@ -23,16 +30,13 @@ final Map<String, Widget> pages = {
   'About Us': NeusHubAboutPage(
     key: GlobalKey(debugLabel: 'About Us'),
   ),
-  'Contact Us': NeusHubContactPage(
-    key: GlobalKey(debugLabel: 'Contact Us'),
-  ),
+  // 'Contact Us': NeusHubContactPage(
+  //   key: GlobalKey(debugLabel: 'Contact Us'),
+  // ),
 };
 
-final GlobalKey<_NeusHubAppState> rootKey =
-    GlobalKey<_NeusHubAppState>(debugLabel: 'root');
-
 NeusHubNodeAPI nodeAPI = NeusHubNodeAPI(
-  '71a8-156-195-149-243.ngrok-free.app',
+  '4e2d-156-195-195-204.ngrok-free.app',
   secured: true,
 );
 
@@ -57,7 +61,11 @@ void main() async {
     preferences: user,
   );
 
-  runApp(NeusHubApp(nodeAPI: nodeAPI));
+  runApp(NeusHubApp(
+    key: rootKey,
+    nodeAPI: nodeAPI,
+    scrollController: scrollController,
+  ));
 }
 
 class NeusHubApp extends StatefulWidget {
@@ -75,11 +83,11 @@ class NeusHubApp extends StatefulWidget {
 }
 
 class _NeusHubAppState extends State<NeusHubApp> {
-  late ScrollController _scrollController;
+  late ScrollController? _scrollController;
 
   @override
   void initState() {
-    _scrollController = ScrollController();
+    _scrollController = widget.scrollController;
     super.initState();
   }
 
@@ -89,8 +97,6 @@ class _NeusHubAppState extends State<NeusHubApp> {
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey appBarKey = GlobalKey(debugLabel: 'app bar');
-
     return MaterialApp(
       theme: theme,
       title: 'NeusHub',
@@ -132,7 +138,11 @@ class _NeusHubAppState extends State<NeusHubApp> {
                               );
                             }
                           }),
-                      NeusHubFooter(tabs: pages.keys.skip(1)),
+                      NeusHubFooter(
+                        tabs: pages.keys.skip(1),
+                        appBarKey: appBarKey,
+                        scrollController: scrollController,
+                      ),
                     ],
                   ),
                 );

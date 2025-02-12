@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../main.dart';
 import '../theme.dart';
 import '../icons.dart';
 import '../widgets.dart';
@@ -8,9 +9,13 @@ class NeusHubFooter extends StatelessWidget {
   const NeusHubFooter({
     super.key,
     required this.tabs,
+    this.appBarKey,
+    this.scrollController,
   });
 
   final Iterable<String> tabs;
+  final GlobalKey? appBarKey;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +29,7 @@ class NeusHubFooter extends StatelessWidget {
       decoration: BoxDecoration(
         color: NeusHubColors.greyDark,
       ),
+      margin: EdgeInsets.only(top: 50),
       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
       alignment: Alignment.center,
       child: NeusHubFooterList(
@@ -39,6 +45,13 @@ class NeusHubFooter extends StatelessWidget {
                 textSize: 20,
                 textWeight: FontWeight.w700,
                 color: Theme.of(context).scaffoldBackgroundColor,
+                onPressed: () {
+                  scrollController?.animateTo(
+                    0,
+                    duration: Durations.long2,
+                    curve: Curves.easeInOut,
+                  );
+                },
               ),
               SizedBox(height: 5),
               Text(
@@ -61,6 +74,22 @@ class NeusHubFooter extends StatelessWidget {
                       only: NeusHubTextIconOnly.textOnly,
                       color: Theme.of(context).scaffoldBackgroundColor,
                       textDecoration: TextDecoration.underline,
+                      onPressed: () {
+                        double? appBarHeight =
+                            appBarKey?.currentContext?.size!.height;
+                        scrollController?.animateTo(
+                          ((pages[tab]?.key as GlobalKey)
+                                      .currentContext
+                                      ?.findRenderObject() as RenderBox)
+                                  .localToGlobal(Offset.zero)
+                                  .dy +
+                              scrollController!.offset -
+                              appBarHeight! -
+                              17,
+                          duration: Durations.long2,
+                          curve: Curves.easeInOut,
+                        );
+                      },
                     ),
                   ),
                 )

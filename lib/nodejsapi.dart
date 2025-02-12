@@ -127,4 +127,22 @@ class NeusHubNodeAPI {
 
     return jsonDecode(response.body);
   }
+
+  Future<dynamic> subscribed(
+    String otherUser, [
+    String path = 'subscribed',
+  ]) async {
+    http.Response response = await http.get(uri(
+      path,
+      'e=${preferences?.getString('email') ?? ''}&other_user=$otherUser&t=${preferences?.getString('token') ?? ''}',
+    ));
+
+    if ((await token() as List)[0] == false) {
+      return ['subscribe'];
+    } else {
+      return (preferences?.getString('email') == null)
+          ? ['subscribe']
+          : jsonDecode(response.body);
+    }
+  }
 }
