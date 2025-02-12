@@ -271,8 +271,6 @@ class _NeusHubFindCardState extends State<NeusHubFindCard> {
                                       '[subscribe]') {
                                     setState(() {});
                                   }
-                                  print((await nodeAPI
-                                      .subscribe(widget.post['user_email'])));
                                 } else {
                                   showDialog(
                                     context: context,
