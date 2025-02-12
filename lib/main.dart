@@ -36,7 +36,7 @@ final Map<String, Widget> pages = {
 };
 
 NeusHubNodeAPI nodeAPI = NeusHubNodeAPI(
-  '4e2d-156-195-195-204.ngrok-free.app',
+  '158ccc67-cfee-4572-aa9d-d43d9bdd3e56-00-37sxieid7wkqm.picard.replit.dev',
   secured: true,
 );
 
