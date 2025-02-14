@@ -1,0 +1,5 @@
+-keep class your.package.name.** { *; }
+-dontwarn okhttp3.**
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes *Annotation*
