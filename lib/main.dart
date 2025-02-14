@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:neushub/pages/app_bar.dart';
 import 'package:neushub/pages/offline.dart';
@@ -13,8 +14,8 @@ import 'package:neushub/pages/footer.dart';
 import './theme.dart';
 import './nodejsapi.dart';
 
-final GlobalKey<_NeusHubAppState> rootKey =
-    GlobalKey<_NeusHubAppState>(debugLabel: 'root');
+final GlobalKey<_NeusHubAppHomeState> rootKey =
+    GlobalKey<_NeusHubAppHomeState>(debugLabel: 'root');
 final GlobalKey appBarKey = GlobalKey(debugLabel: 'app bar');
 final ScrollController scrollController = ScrollController();
 
@@ -62,13 +63,12 @@ void main() async {
   );
 
   runApp(NeusHubApp(
-    key: rootKey,
     nodeAPI: nodeAPI,
     scrollController: scrollController,
   ));
 }
 
-class NeusHubApp extends StatefulWidget {
+class NeusHubApp extends StatelessWidget {
   const NeusHubApp({
     super.key,
     required this.nodeAPI,
@@ -79,10 +79,46 @@ class NeusHubApp extends StatefulWidget {
   final ScrollController? scrollController;
 
   @override
-  State<NeusHubApp> createState() => _NeusHubAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      theme: theme,
+      title: 'NeusHub',
+      routerConfig: GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => NeusHubAppHome(
+              key: rootKey,
+              nodeAPI: nodeAPI,
+              scrollController: scrollController,
+            ),
+          ),
+          GoRoute(
+            path: '/password',
+            builder: (context, state) => NeusHubAppPasswordReset(),
+          ),
+        ],
+        errorBuilder: (context, state) => NeusHubAppError404(),
+      ),
+    );
+  }
 }
 
-class _NeusHubAppState extends State<NeusHubApp> {
+class NeusHubAppHome extends StatefulWidget {
+  const NeusHubAppHome({
+    super.key,
+    required this.nodeAPI,
+    this.scrollController,
+  });
+
+  final NeusHubNodeAPI nodeAPI;
+  final ScrollController? scrollController;
+
+  @override
+  State<NeusHubAppHome> createState() => _NeusHubAppHomeState();
+}
+
+class _NeusHubAppHomeState extends State<NeusHubAppHome> {
   late ScrollController? _scrollController;
 
   @override
@@ -97,66 +133,80 @@ class _NeusHubAppState extends State<NeusHubApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: theme,
-      title: 'NeusHub',
-      home: SafeArea(
-        child: Scaffold(
-          appBar: NeusHubAppBar(
-            key: appBarKey,
-            preferredSize: NeusHubAppSize(context).size(),
+    return SafeArea(
+      child: Scaffold(
+        appBar: NeusHubAppBar(
+          key: appBarKey,
+          preferredSize: NeusHubAppSize(context).size(),
+          scrollController: _scrollController,
+          child: NeusHubAppBarMenu(
+            appBarKey: appBarKey,
+            context: context,
+            tabs: pages.keys.skip(1),
+            menuFlag: (MediaQuery.sizeOf(context).width < mobileSize.width)
+                ? true
+                : false,
             scrollController: _scrollController,
-            child: NeusHubAppBarMenu(
-              appBarKey: appBarKey,
-              context: context,
-              tabs: pages.keys.skip(1),
-              menuFlag: (MediaQuery.sizeOf(context).width < mobileSize.width)
-                  ? true
-                  : false,
-              scrollController: _scrollController,
-            ).list(),
-          ),
-          body: FutureBuilder<int>(
-            future: widget.nodeAPI.connection(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasError) {
-                return SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    children: [
-                      FutureBuilder(
-                          future: nodeAPI.token(),
-                          builder: (context, snapshot) {
-                            if (snapshot.data != null &&
-                                snapshot.data.toString() != '[false]') {
-                              return Column(
-                                children: pages.values.toList().sublist(1),
-                              );
-                            } else {
-                              return Column(
-                                children: pages.values.toList(),
-                              );
-                            }
-                          }),
-                      NeusHubFooter(
-                        tabs: pages.keys.skip(1),
-                        appBarKey: appBarKey,
-                        scrollController: scrollController,
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return NeusHubOfflinePage(
-                  onPressed: () {
-                    setState(() {});
-                  },
-                );
-              }
-            },
-          ),
+          ).list(),
+        ),
+        body: FutureBuilder<int>(
+          future: widget.nodeAPI.connection(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasError) {
+              return SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    FutureBuilder(
+                        future: nodeAPI.token(),
+                        builder: (context, snapshot) {
+                          if (snapshot.data != null &&
+                              snapshot.data.toString() != '[false]') {
+                            return Column(
+                              children: pages.values.toList().sublist(1),
+                            );
+                          } else {
+                            return Column(
+                              children: pages.values.toList(),
+                            );
+                          }
+                        }),
+                    NeusHubFooter(
+                      tabs: pages.keys.skip(1),
+                      appBarKey: appBarKey,
+                      scrollController: scrollController,
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return NeusHubOfflinePage(
+                onPressed: () {
+                  setState(() {});
+                },
+              );
+            }
+          },
         ),
       ),
     );
+  }
+}
+
+class NeusHubAppPasswordReset extends StatelessWidget {
+  const NeusHubAppPasswordReset({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+class NeusHubAppError404 extends StatelessWidget {
+  const NeusHubAppError404({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('error 404');
   }
 }
