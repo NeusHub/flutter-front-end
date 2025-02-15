@@ -118,14 +118,14 @@ class NeusHubFindCategory extends StatelessWidget {
           ),
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            itemCount: ((posts)[name] as List).length + 1,
-            separatorBuilder: (context, index) => (index == 0)
+            itemCount: ((posts)[name] as List).length + 2,
+            separatorBuilder: (context, index) => (index == 0 || index == ((posts)[name] as List).length)
                 ? SizedBox()
                 : SizedBox(
                     width: 20,
                   ),
             itemBuilder: (context, index) {
-              if (index == 0) {
+              if (index == 0 || index == ((posts)[name] as List).length + 1) {
                 return SizedBox(width: 20);
               } else {
                 return NeusHubFindCard(

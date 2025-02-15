@@ -39,58 +39,73 @@ class NeusHubAppBarMenu {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => Dialog(
-                          backgroundColor:
-                              Theme.of(context).scaffoldBackgroundColor,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  border: Theme.of(context).appBarTheme.shape
-                                      as Border,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    NeusHubAppBarTitle(
-                                      menuFlag: true,
-                                      scrollController: scrollController,
-                                    ),
-                                    NeusHubTextIconButton(
-                                      icon: Icons.close,
-                                      label: '',
-                                      only: NeusHubTextIconOnly.iconOnly,
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                ),
+                        builder: (context) => Padding(
+                          padding: EdgeInsets.zero,
+                          child: Container(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              width: 330,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
                               ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: tabs
-                                      .map<Padding>(
-                                        (tab) => Padding(
-                                          padding: const EdgeInsets.all(5),
-                                          child: NeusHubAppBarTab(
-                                            tab,
-                                            menuFlag: menuFlag,
-                                            scrollController: scrollController,
-                                            appBarKey: appBarKey,
-                                          ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    padding: EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      border: Theme.of(context).appBarTheme.shape
+                                          as Border,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        NeusHubAppBarTitle(
+                                          menuFlag: true,
+                                          scrollController: scrollController,
                                         ),
-                                      )
-                                      .toList(),
-                                ),
+                                        NeusHubTextIconButton(
+                                          icon: Icons.close,
+                                          label: '',
+                                          only: NeusHubTextIconOnly.iconOnly,
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        ...tabs
+                                          .map<Padding>(
+                                            (tab) => Padding(
+                                              padding: const EdgeInsets.all(5),
+                                              child: NeusHubAppBarTab(
+                                                tab,
+                                                menuFlag: menuFlag,
+                                                scrollController: scrollController,
+                                                appBarKey: appBarKey,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 50),
+                                            child: NeusHubSignButton(
+                                              label: 'Grow your audience today',
+                                            ),
+                                          ),
+                                        ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       );
@@ -109,6 +124,7 @@ class NeusHubAppBarMenu {
                     appBarKey: appBarKey,
                   )),
               SizedBox(width: 10),
+              NeusHubSignButton(label: 'Grow your audience today'),
             ],
           );
   }
@@ -139,8 +155,7 @@ class NeusHubAppBar extends PreferredSize {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           NeusHubAppBarTitle(scrollController: scrollController),
-          Expanded(child: child),
-          NeusHubSignButton(label: 'Grow your audience today'),
+          child,
         ],
       ),
     );

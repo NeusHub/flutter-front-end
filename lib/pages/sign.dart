@@ -337,6 +337,7 @@ class _NeusHubSignInPageState extends State<NeusHubSignInPage> {
                 label: 'Forgot Password?',
                 only: NeusHubTextIconOnly.textOnly,
                 textDecoration: TextDecoration.underline,
+                onPressed: () {},
               ),
             ],
           ),

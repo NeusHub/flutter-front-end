@@ -97,7 +97,6 @@ ThemeData theme = ThemeData(
     surfaceContainer: NeusHubColors.dialog,
     primaryContainer: NeusHubColors.transparent,
   ),
-  dialogBackgroundColor: NeusHubColors.white,
   dialogTheme: DialogTheme(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(5),
