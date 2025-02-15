@@ -10,9 +10,11 @@ import 'package:neushub/pages/find_newsletter.dart';
 import 'package:neushub/pages/about_us.dart';
 // import 'package:neushub/pages/contact_us.dart';
 import 'package:neushub/pages/footer.dart';
+import 'package:neushub/pages/sign.dart';
 
 import './theme.dart';
 import './nodejsapi.dart';
+import './bloc/sign_bloc.dart';
 
 final GlobalKey<_NeusHubAppHomeState> rootKey =
     GlobalKey<_NeusHubAppHomeState>(debugLabel: 'root');
@@ -94,8 +96,10 @@ class NeusHubApp extends StatelessWidget {
             ),
           ),
           GoRoute(
-            path: '/password',
-            builder: (context, state) => NeusHubAppPasswordReset(),
+            path: '/password:id',
+            builder: (context, state) => NeusHubAppPasswordReset(
+              id: state.pathParameters['id'] ?? '',
+            ),
           ),
         ],
         errorBuilder: (context, state) => NeusHubAppError404(),
@@ -194,11 +198,16 @@ class _NeusHubAppHomeState extends State<NeusHubAppHome> {
 }
 
 class NeusHubAppPasswordReset extends StatelessWidget {
-  const NeusHubAppPasswordReset({super.key});
+  const NeusHubAppPasswordReset({
+    super.key,
+    this.id = '',
+  });
+
+  final String id;
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return NeusHubSignDialog(signTypeDialog: NeusHubSignType.resetPassword);
   }
 }
 
@@ -207,6 +216,8 @@ class NeusHubAppError404 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('error 404');
+    return SafeArea(
+      child: NeusHubSignDialog(signTypeDialog: NeusHubSignType.resetPassword),
+    );
   }
 }

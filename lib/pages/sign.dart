@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:neushub/pages/app_bar.dart';
 
@@ -82,6 +83,7 @@ class NeusHubSignDialog extends Dialog {
                               ),
                             ],
                           ),
+                        NeusHubSignType.resetPassword => Text(''),
                         _ => Row(
                             children: [
                               Text(
@@ -186,6 +188,8 @@ class NeusHubSignDialog extends Dialog {
                               SizedBox(height: 10),
                               switch (signType(state)) {
                                 NeusHubSignType.signUp => NeusHubSignUpPage(),
+                                NeusHubSignType.resetPassword =>
+                                  NeusHubSignResetPage(),
                                 _ => NeusHubSignInPage(),
                               },
                             ],
@@ -414,27 +418,30 @@ class _NeusHubSignUpPageState extends State<NeusHubSignUpPage> {
     if (RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email) &&
         RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
             .hasMatch(password) &&
-        RegExp(r'^[a-zA-Z\s]+$').hasMatch(name) &&
-        password == confirmPassword) {
-      dynamic r = await nodeAPI.signUp(
-        email,
-        name,
-        password,
-      );
-      setState(() {
-        valid = true;
-        response = (r.toString() == 'true') ? '' : 'user exist';
-        if (response == '') {
-          rootKey.currentState?.refresh();
-          Navigator.of(context).pop();
-        }
-      });
+        RegExp(r'^[a-zA-Z\s]+$').hasMatch(name)) {
+      if (password == confirmPassword) {
+        dynamic r = await nodeAPI.signUp(
+          email,
+          name,
+          password,
+        );
+        setState(() {
+          valid = true;
+          response = (r.toString() == 'true') ? '' : 'user exist';
+          if (response == '') {
+            rootKey.currentState?.refresh();
+            Navigator.of(context).pop();
+          }
+        });
+      } else {
+        setState(() {
+          valid = false;
+          response = 'passwords not match';
+        });
+      }
     } else {
       setState(() {
         valid = false;
-        if (password != confirmPassword) {
-          response = 'passwords not match';
-        }
       });
     }
   }
@@ -478,6 +485,112 @@ class _NeusHubSignUpPageState extends State<NeusHubSignUpPage> {
                 passworrdContoller.text,
                 confirmPasswordController.text,
                 nameController.text,
+              );
+            },
+          ),
+          SizedBox(height: 10),
+          SizedBox(
+            child: (response == '')
+                ? null
+                : Text(
+                    response,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class NeusHubSignResetPage extends StatefulWidget {
+  const NeusHubSignResetPage({
+    super.key,
+  });
+
+  @override
+  State<NeusHubSignResetPage> createState() => _NeusHubSignResetPageState();
+}
+
+class _NeusHubSignResetPageState extends State<NeusHubSignResetPage> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  late final TextEditingController newPassworrdContoller,
+      confirmPasswordController;
+
+  @override
+  void initState() {
+    newPassworrdContoller = TextEditingController();
+    confirmPasswordController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    newPassworrdContoller.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  bool valid = false;
+  String response = '';
+
+  void signValidate(
+    String newPassword,
+    String confirmPassword,
+  ) async {
+    if (RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+        .hasMatch(newPassword)) {
+      if (newPassword == confirmPassword) {
+        setState(() {
+          valid = true;
+          if (response == '') {
+            rootKey.currentState?.refresh();
+            context.go('/');
+          }
+        });
+      } else {
+        setState(() {
+          valid = false;
+          response = 'passwords not match';
+        });
+      }
+    } else {
+      setState(() {
+        valid = false;
+        response = '';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          NeusHubTextIconField.filled(
+            formKey: formKey,
+            fieldType: NeusHubTextIconFieldType.password,
+            contrroller: newPassworrdContoller,
+          ),
+          NeusHubTextIconField.filled(
+            formKey: formKey,
+            fieldType: NeusHubTextIconFieldType.confirmPassword,
+            contrroller: confirmPasswordController,
+          ),
+          SizedBox(height: 5),
+          NeusHubTextIconButton.filled(
+            icon: Icons.abc,
+            label: 'Confirm',
+            only: NeusHubTextIconOnly.textOnly,
+            expanded: true,
+            activated: true,
+            onPressed: () {
+              signValidate(
+                newPassworrdContoller.text,
+                confirmPasswordController.text,
               );
             },
           ),
